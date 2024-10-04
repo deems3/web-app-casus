@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Net.WebSockets;
 using Victuz_MVC.Data;
 
 namespace Victuz_MVC
 {
     public class Program
     {
-        public static void Main(string[] args)
+        //Use async Task to run the program with a 'await' in identityroles
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,8 @@ namespace Victuz_MVC
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>() 
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
@@ -45,6 +48,43 @@ namespace Victuz_MVC
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var RoleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var roles = new[] { "Admin", "Manager", "Member" };
+
+                foreach (var role in roles)
+                {
+                    //Check if role already exists in the application, otherwise add new role.
+                    if (!await RoleManager.RoleExistsAsync(role))
+                        await RoleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+                string email = "admin@admin.com";
+                string password = "Admin123!";
+
+
+                 if (await UserManager.FindByEmailAsync(email) == null)
+                {
+                    // create the user
+                    var user = new IdentityUser();
+                    user.UserName = email;
+                    user.Email = email;
+
+                    // add user to database
+                    await UserManager.CreateAsync(user, password);
+
+                    // add to role
+                    await UserManager.AddToRoleAsync(user, "Admin");
+                }
+  
+            }
 
             app.Run();
         }
