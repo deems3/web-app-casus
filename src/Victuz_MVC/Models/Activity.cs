@@ -14,10 +14,8 @@ namespace Victuz_MVC.Models
         public int Limit { get; set; }
         public DateTime DateTime { get; set; }
 
-        public string? BestuurslidId { get; set; }
-        public Bestuurslid? Bestuurslid { get; set; }
 
-        public List<Lid>? ResponsibleStudentsIds { get; set; }
+        public ICollection<Account>? Hosts { get; set; }
 
     }
 }
