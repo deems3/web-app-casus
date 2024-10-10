@@ -14,7 +14,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Victuz_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+<<<<<<< Updated upstream
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+176d532f83a3cdba1906f1294ce54a696e33a41b")]
+=======
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c3f2aa51521f2e65c8aac54c581d6e009bd64575")]
+>>>>>>> Stashed changes
 [assembly: System.Reflection.AssemblyProductAttribute("Victuz_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Victuz_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
