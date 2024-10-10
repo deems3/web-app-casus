@@ -16,5 +16,6 @@ namespace Victuz_MVC.Data
             base.OnModelCreating(builder);
         }
         public DbSet<Victuz_MVC.Models.Activity> Activity { get; set; } = default!;
+        public DbSet<Victuz_MVC.Models.Product> Products { get; set; } = default!;
     }
 }

@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Marti\\Source\\Repos\\deems3\\web-app-casus\\src\\Victuz_API\\Victuz_API.csproj": {}
+    "C:\\Users\\saaro\\Source\\Repos\\web-app-casus\\src\\Victuz_API\\Victuz_API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Marti\\Source\\Repos\\deems3\\web-app-casus\\src\\Victuz_API\\Victuz_API.csproj": {
+    "C:\\Users\\saaro\\Source\\Repos\\web-app-casus\\src\\Victuz_API\\Victuz_API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Marti\\Source\\Repos\\deems3\\web-app-casus\\src\\Victuz_API\\Victuz_API.csproj",
+        "projectUniqueName": "C:\\Users\\saaro\\Source\\Repos\\web-app-casus\\src\\Victuz_API\\Victuz_API.csproj",
         "projectName": "Victuz_API",
-        "projectPath": "C:\\Users\\Marti\\Source\\Repos\\deems3\\web-app-casus\\src\\Victuz_API\\Victuz_API.csproj",
-        "packagesPath": "C:\\Users\\Marti\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Marti\\Source\\Repos\\deems3\\web-app-casus\\src\\Victuz_API\\obj\\",
+        "projectPath": "C:\\Users\\saaro\\Source\\Repos\\web-app-casus\\src\\Victuz_API\\Victuz_API.csproj",
+        "packagesPath": "C:\\Users\\saaro\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\saaro\\Source\\Repos\\web-app-casus\\src\\Victuz_API\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Marti\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\saaro\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
