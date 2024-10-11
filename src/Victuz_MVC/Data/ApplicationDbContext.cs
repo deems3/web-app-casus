@@ -17,5 +17,6 @@ namespace Victuz_MVC.Data
         }
         public DbSet<Victuz_MVC.Models.Activity> Activity { get; set; } = default!;
         public DbSet<Victuz_MVC.Models.Product> Products { get; set; } = default!;
+        public DbSet<Victuz_MVC.Models.ProductCategory> ProductCategory { get; set; } = default!;
     }
 }
