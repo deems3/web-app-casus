@@ -364,3 +364,16 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+
+
+
+
+
+
+
+
+
+#fix for conflict met user diectory
+obj/
+bin/
