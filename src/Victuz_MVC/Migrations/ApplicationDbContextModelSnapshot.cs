@@ -314,9 +314,6 @@ namespace Victuz_MVC.Migrations
                     b.ToTable("ActivityCategory");
                 });
 
-                    b.ToTable("Activity");
-                });
-
             modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
