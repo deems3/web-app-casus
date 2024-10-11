@@ -32,11 +32,15 @@ namespace Victuz_MVC.Data
             {
                 Id = 1,
                 Name = "Testproduct 1",
-                Description = "Het eerste testproduct1",
+                Description = "Het eerste testproduct 1",
                 Price = 19.99m,
-                Category = productCategory1,
-                CategoryId = productCategory1.Id
+                CategoryId = 1
             };
+
+            builder.Entity<ProductCategory>().HasData(productCategory1);
+            builder.Entity<Product>().HasData(product1);
+
+            
         }
 
         

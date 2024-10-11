@@ -12,8 +12,8 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241011112539_AllMigrations")]
-    partial class AllMigrations
+    [Migration("20241011123407_all")]
+    partial class all
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -319,21 +319,21 @@ namespace Victuz_MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("ProductPrice")
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductCategoryId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
                 });
@@ -454,9 +454,13 @@ namespace Victuz_MVC.Migrations
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
                 {
-                    b.HasOne("Victuz_MVC.Models.ProductCategory", null)
+                    b.HasOne("Victuz_MVC.Models.ProductCategory", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("ProductCategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Account", b =>

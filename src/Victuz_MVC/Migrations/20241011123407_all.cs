@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Victuz_MVC.Migrations
 {
     /// <inheritdoc />
-    public partial class AllMigrations : Migration
+    public partial class All : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -103,17 +103,18 @@ namespace Victuz_MVC.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductCategoryId = table.Column<int>(type: "int", nullable: true)
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_ProductCategory_ProductCategoryId",
-                        column: x => x.ProductCategoryId,
+                        name: "FK_Products_ProductCategory_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "ProductCategory",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -321,9 +322,9 @@ namespace Victuz_MVC.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_ProductCategoryId",
+                name: "IX_Products_CategoryId",
                 table: "Products",
-                column: "ProductCategoryId");
+                column: "CategoryId");
         }
 
         /// <inheritdoc />

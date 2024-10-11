@@ -12,8 +12,8 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241011121431_ProductUpdate")]
-    partial class ProductUpdate
+    [Migration("20241011123509_ItemsInDatabase")]
+    partial class ItemsInDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -336,6 +336,16 @@ namespace Victuz_MVC.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Description = "Het eerste testproduct1",
+                            Name = "Testproduct 1",
+                            Price = 19.99m
+                        });
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ProductCategory", b =>
@@ -353,6 +363,13 @@ namespace Victuz_MVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductCategory");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Testproductcategorie 1"
+                        });
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
