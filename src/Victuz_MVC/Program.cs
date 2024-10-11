@@ -70,7 +70,7 @@ namespace Victuz_MVC
                 string password = "Admin123!";
 
 
-                 if (await UserManager.FindByEmailAsync(email) == null)
+                if (await UserManager.FindByEmailAsync(email) == null)
                 {
                     // create the user
                     var user = new IdentityUser();
@@ -83,7 +83,7 @@ namespace Victuz_MVC
                     // add to role
                     await UserManager.AddToRoleAsync(user, "Admin");
                 }
-  
+
             }
 
             app.Run();
