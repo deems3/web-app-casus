@@ -21,6 +21,8 @@ namespace Victuz_MVC.Models
 
         //catergory connectie
         public int CategoryId { get; set; }
+
+        [Required]
         public ActivityCategory Category { get; set; } = null!;
 
     }

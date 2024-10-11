@@ -9,6 +9,8 @@ namespace Victuz_MVC.Models
         [Required]
         [DataType (DataType.Text)]
         public string Name { get; set; } = null!;
+
+
         public List<Activity>? Activities { get; set; }
 
 
