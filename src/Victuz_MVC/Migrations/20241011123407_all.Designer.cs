@@ -13,7 +13,7 @@ namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20241011123407_all")]
-    partial class all
+    partial class All
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
