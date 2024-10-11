@@ -374,6 +374,6 @@ FodyWeavers.xsd
 
 
 
-
+#fix for conflict met user directory
 obj/
 bin/
