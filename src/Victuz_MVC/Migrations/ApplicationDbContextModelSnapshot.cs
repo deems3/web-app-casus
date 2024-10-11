@@ -8,7 +8,7 @@ using Victuz_MVC.Data;
 
 #nullable disable
 
-namespace Victuz_MVC.Data.Migrations
+namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -281,7 +281,8 @@ namespace Victuz_MVC.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
 
