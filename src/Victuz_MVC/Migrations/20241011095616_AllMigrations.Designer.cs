@@ -9,11 +9,11 @@ using Victuz_MVC.Data;
 
 #nullable disable
 
-namespace Victuz_MVC.Data.Migrations
+namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241010120623_ReloadforVisuals")]
-    partial class ReloadforVisuals
+    [Migration("20241011095616_AllMigrations")]
+    partial class AllMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -284,7 +284,8 @@ namespace Victuz_MVC.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
 

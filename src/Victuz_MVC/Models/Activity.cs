@@ -12,12 +12,16 @@ namespace Victuz_MVC.Models
         public string? Name { get; set; }
 
         public string? Description { get; set; }
-        public string? Category { get; set; }
         public int Limit { get; set; }
         public DateTime DateTime { get; set; }
 
 
         public ICollection<Account>? Hosts { get; set; }
+       
+
+        //catergory connectie
+        public int CategoryId { get; set; }
+        public ActivityCategory Category { get; set; } = null!;
 
     }
 }

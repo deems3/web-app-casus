@@ -10,22 +10,22 @@ using Victuz_MVC.Models;
 
 namespace Victuz_MVC.Controllers
 {
-    public class ActivitiesController : Controller
+    public class ActivityCategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivityCategoriesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Activities
+        // GET: ActivityCategories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Activity.ToListAsync());
+            return View(await _context.ActivityCategory.ToListAsync());
         }
 
-        // GET: Activities/Details/5
+        // GET: ActivityCategories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,40 +33,40 @@ namespace Victuz_MVC.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activity
+            var activityCategory = await _context.ActivityCategory
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (activity == null)
+            if (activityCategory == null)
             {
                 return NotFound();
             }
 
-            return View(activity);
+            return View(activityCategory);
         }
 
-        // GET: Activities/Create
+        // GET: ActivityCategories/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
             return View();
         }
 
-        // POST: Activities/Create
+        // POST: ActivityCategories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Category,Limit,DateTime,CategoryId")] Activity activity)
+        public async Task<IActionResult> Create([Bind("Id,Name")] ActivityCategory activityCategory)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(activity);
+                _context.Add(activityCategory);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(activity);
+
+            return View(activityCategory);
         }
 
-        // GET: Activities/Edit/5
+        // GET: ActivityCategories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -74,22 +74,22 @@ namespace Victuz_MVC.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activity.FindAsync(id);
-            if (activity == null)
+            var activityCategory = await _context.ActivityCategory.FindAsync(id);
+            if (activityCategory == null)
             {
                 return NotFound();
             }
-            return View(activity);
+            return View(activityCategory);
         }
 
-        // POST: Activities/Edit/5
+        // POST: ActivityCategories/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Category,Limit,DateTime")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] ActivityCategory activityCategory)
         {
-            if (id != activity.Id)
+            if (id != activityCategory.Id)
             {
                 return NotFound();
             }
@@ -98,12 +98,12 @@ namespace Victuz_MVC.Controllers
             {
                 try
                 {
-                    _context.Update(activity);
+                    _context.Update(activityCategory);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ActivityExists(activity.Id))
+                    if (!ActivityCategoryExists(activityCategory.Id))
                     {
                         return NotFound();
                     }
@@ -114,10 +114,10 @@ namespace Victuz_MVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(activity);
+            return View(activityCategory);
         }
 
-        // GET: Activities/Delete/5
+        // GET: ActivityCategories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -125,34 +125,34 @@ namespace Victuz_MVC.Controllers
                 return NotFound();
             }
 
-            var activity = await _context.Activity
+            var activityCategory = await _context.ActivityCategory
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (activity == null)
+            if (activityCategory == null)
             {
                 return NotFound();
             }
 
-            return View(activity);
+            return View(activityCategory);
         }
 
-        // POST: Activities/Delete/5
+        // POST: ActivityCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var activity = await _context.Activity.FindAsync(id);
-            if (activity != null)
+            var activityCategory = await _context.ActivityCategory.FindAsync(id);
+            if (activityCategory != null)
             {
-                _context.Activity.Remove(activity);
+                _context.ActivityCategory.Remove(activityCategory);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ActivityExists(int id)
+        private bool ActivityCategoryExists(int id)
         {
-            return _context.Activity.Any(e => e.Id == id);
+            return _context.ActivityCategory.Any(e => e.Id == id);
         }
     }
 }

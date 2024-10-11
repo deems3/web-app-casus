@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace Victuz_MVC.Data.Migrations
+namespace Victuz_MVC.Migrations
 {
     /// <inheritdoc />
-    public partial class StartMigration : Migration
+    public partial class CatetergoryChanges : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

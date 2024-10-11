@@ -9,18 +9,18 @@ using Victuz_MVC.Data;
 
 #nullable disable
 
-namespace Victuz_MVC.Data.Migrations
+namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241010104206_start")]
-    partial class StartMigration
+    [Migration("20241011100128_CategoryToActivity")]
+    partial class CategoryToActivity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -89,6 +89,11 @@ namespace Victuz_MVC.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("nvarchar(13)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -140,6 +145,10 @@ namespace Victuz_MVC.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator().HasValue("IdentityUser");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -227,6 +236,99 @@ namespace Victuz_MVC.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Victuz_MVC.Models.AccountActivity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccountId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("ActivityId");
+
+                    b.ToTable("AccountActivity");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Limit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Activity");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActivityCategory");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<int?>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasDiscriminator().HasValue("Account");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -276,6 +378,56 @@ namespace Victuz_MVC.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.AccountActivity", b =>
+                {
+                    b.HasOne("Victuz_MVC.Models.Account", "Account")
+                        .WithMany("AccountActivities")
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("Victuz_MVC.Models.Activity", "Activity")
+                        .WithMany()
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Activity");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
+                {
+                    b.HasOne("Victuz_MVC.Models.ActivityCategory", "Category")
+                        .WithMany("Activities")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
+                {
+                    b.HasOne("Victuz_MVC.Models.Activity", null)
+                        .WithMany("Hosts")
+                        .HasForeignKey("ActivityId");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
+                {
+                    b.Navigation("Hosts");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
+                {
+                    b.Navigation("Activities");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
+                {
+                    b.Navigation("AccountActivities");
                 });
 #pragma warning restore 612, 618
         }
