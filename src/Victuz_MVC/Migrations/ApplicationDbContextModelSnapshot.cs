@@ -267,13 +267,8 @@ namespace Victuz_MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
@@ -290,7 +285,6 @@ namespace Victuz_MVC.Migrations
                         .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
-
 
                     b.HasIndex("CategoryId");
 
@@ -312,6 +306,50 @@ namespace Victuz_MVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActivityCategory");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProductCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ProductPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductCategoryId");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.ProductCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductCategory");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
@@ -400,7 +438,6 @@ namespace Victuz_MVC.Migrations
                     b.Navigation("Activity");
                 });
 
-
             modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
                 {
                     b.HasOne("Victuz_MVC.Models.ActivityCategory", "Category")
@@ -410,6 +447,13 @@ namespace Victuz_MVC.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
+                {
+                    b.HasOne("Victuz_MVC.Models.ProductCategory", null)
+                        .WithMany("Products")
+                        .HasForeignKey("ProductCategoryId");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
@@ -423,9 +467,15 @@ namespace Victuz_MVC.Migrations
                 {
                     b.Navigation("Hosts");
                 });
+
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
                 {
                     b.Navigation("Activities");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.ProductCategory", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
