@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Victuz_MVC.Data;
 
@@ -11,9 +12,11 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241011100128_CategoryToActivity")]
+    partial class CategoryToActivity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -267,13 +270,8 @@ namespace Victuz_MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
@@ -290,7 +288,6 @@ namespace Victuz_MVC.Migrations
                         .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
-
 
                     b.HasIndex("CategoryId");
 
@@ -312,9 +309,6 @@ namespace Victuz_MVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActivityCategory");
-                });
-
-                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
@@ -403,7 +397,6 @@ namespace Victuz_MVC.Migrations
                     b.Navigation("Activity");
                 });
 
-
             modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
                 {
                     b.HasOne("Victuz_MVC.Models.ActivityCategory", "Category")
@@ -426,6 +419,7 @@ namespace Victuz_MVC.Migrations
                 {
                     b.Navigation("Hosts");
                 });
+
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
                 {
                     b.Navigation("Activities");
