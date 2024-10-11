@@ -32,7 +32,7 @@ namespace Victuz_MVC.Data
             {
                 Id = 1,
                 Name = "Testproduct 1",
-                Description = "Het eerste testproduct 1",
+                Description = "Het eerste testproduct",
                 Price = 19.99m,
                 CategoryId = 1
             };
