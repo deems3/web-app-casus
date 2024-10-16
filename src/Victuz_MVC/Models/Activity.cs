@@ -4,18 +4,26 @@ namespace Victuz_MVC.Models
 {
     public class Activity
     {
+        [Key]
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Dit veld is verplicht.")]
+        [StringLength(25, ErrorMessage = "Maximaal 25 karakters toegestaan.")]
         public string? Name { get; set; }
 
         public string? Description { get; set; }
-        public string? Category { get; set; }
         public int Limit { get; set; }
         public DateTime DateTime { get; set; }
 
 
         public ICollection<Account>? Hosts { get; set; }
+       
+
+        //catergory connectie
+        public int CategoryId { get; set; }
+
+        [Required]
+        public ActivityCategory Category { get; set; } = null!;
 
     }
 }
