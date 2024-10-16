@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Victuz_MVC.Migrations
 {
     /// <inheritdoc />
-    public partial class All : Migration
+    public partial class FixMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -122,7 +122,6 @@ namespace Victuz_MVC.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ActivityId = table.Column<int>(type: "int", nullable: true),
@@ -261,6 +260,16 @@ namespace Victuz_MVC.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "ProductCategory",
+                columns: new[] { "Id", "Name" },
+                values: new object[] { 1, "Testproductcategorie 1" });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "CategoryId", "Description", "Name", "Price" },
+                values: new object[] { 1, 1, "Het eerste testproduct", "Testproduct 1", 19.99m });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountActivity_AccountId",
