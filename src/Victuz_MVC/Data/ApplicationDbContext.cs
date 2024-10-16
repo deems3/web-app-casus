@@ -38,7 +38,7 @@ namespace Victuz_MVC.Data
             };
 
             builder.Entity<ProductCategory>().HasData(productCategory1);
-            builder.Entity<Product>().HasData(product1);   
+            builder.Entity<Product>().HasData(product1);
         }
     }
 }
