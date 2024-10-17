@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Victuz_MVC.Enums;
 
 namespace Victuz_MVC.Models
 {
@@ -11,16 +12,25 @@ namespace Victuz_MVC.Models
         [StringLength(25, ErrorMessage = "Maximaal 25 karakters toegestaan.")]
         public string? Name { get; set; }
 
+        [StringLength(255, ErrorMessage = "Maximaal 255 karakters toegestaan.")]
         public string? Description { get; set; }
+
         public int Limit { get; set; }
+
         public DateTime DateTime { get; set; }
 
 
+        // Responsible people
         public ICollection<Account>? Hosts { get; set; }
-       
 
-        //catergory connectie
+
+        // Status enum
+        public ActivityStatus Status { get; set; } = ActivityStatus.Processing;
+
+
+        //category connectie
         public int CategoryId { get; set; }
+
 
         [Required]
         public ActivityCategory Category { get; set; } = null!;
