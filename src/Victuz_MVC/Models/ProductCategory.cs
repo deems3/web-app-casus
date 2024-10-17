@@ -9,5 +9,7 @@ namespace Victuz_MVC.Models
 
         [Required]
         public string? Name { get; set; }
+
+        public List<ProductCategoryLine>? ProductCategoryLines { get; set; }
     }
 }
