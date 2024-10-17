@@ -12,8 +12,8 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241017105252_AddedActivityCategoryLine")]
-    partial class AddedActivityCategoryLine
+    [Migration("20241017115719_ActivityCategory")]
+    partial class ActivityCategory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

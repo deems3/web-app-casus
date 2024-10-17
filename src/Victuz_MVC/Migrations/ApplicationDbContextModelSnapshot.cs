@@ -258,7 +258,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("AccountActivity", (string)null);
+                    b.ToTable("AccountActivity");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
@@ -294,7 +294,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Activity", (string)null);
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategorieLine", b =>
@@ -317,7 +317,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("ActivityCategorieLine", (string)null);
+                    b.ToTable("ActivityCategorieLine");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
@@ -334,7 +334,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityCategory", (string)null);
+                    b.ToTable("ActivityCategory");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
@@ -361,7 +361,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
                     b.HasData(
                         new
@@ -388,7 +388,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategory", (string)null);
+                    b.ToTable("ProductCategory");
 
                     b.HasData(
                         new
