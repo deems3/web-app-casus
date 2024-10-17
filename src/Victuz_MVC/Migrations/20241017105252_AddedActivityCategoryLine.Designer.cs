@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Victuz_MVC.Data;
 
@@ -11,9 +12,11 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241017105252_AddedActivityCategoryLine")]
+    partial class AddedActivityCategoryLine
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,7 +261,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("AccountActivity", (string)null);
+                    b.ToTable("AccountActivity");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
@@ -294,7 +297,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Activity", (string)null);
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategorieLine", b =>
@@ -317,7 +320,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("ActivityCategorieLine", (string)null);
+                    b.ToTable("ActivityCategorieLine");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
@@ -334,7 +337,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityCategory", (string)null);
+                    b.ToTable("ActivityCategory");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
@@ -361,7 +364,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
                     b.HasData(
                         new
@@ -388,7 +391,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategory", (string)null);
+                    b.ToTable("ProductCategory");
 
                     b.HasData(
                         new

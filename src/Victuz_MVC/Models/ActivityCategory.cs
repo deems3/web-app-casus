@@ -4,7 +4,6 @@ namespace Victuz_MVC.Models
 {
     public class ActivityCategory
     {
-        [Key]
         public int Id { get; set; }
 
 
