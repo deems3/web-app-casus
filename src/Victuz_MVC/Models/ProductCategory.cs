@@ -8,9 +8,6 @@ namespace Victuz_MVC.Models
         public int Id { get; set; }
 
         [Required]
-        [DataType(DataType.Text)]
-        public string Name { get; set; } = null!;
-
-        public List<Product>? Products { get; set; }
+        public string? Name { get; set; }
     }
 }
