@@ -2,7 +2,7 @@
 
 namespace Victuz_MVC.Models
 {
-    public class ActivityCategorieLine
+    public class ActivityCategoryLine
     {
         public int Id { get; set; }
 
