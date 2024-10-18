@@ -258,7 +258,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("AccountActivity", (string)null);
+                    b.ToTable("AccountActivity");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
@@ -269,7 +269,7 @@ namespace Victuz_MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("ActivityCategoryLineId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateTime")
@@ -292,9 +292,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("Activity", (string)null);
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
@@ -305,13 +303,16 @@ namespace Victuz_MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ActivityCategoryLineId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityCategory", (string)null);
+                    b.ToTable("ActivityCategory");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategoryLine", b =>
@@ -334,7 +335,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("ActivityCategoryLine", (string)null);
+                    b.ToTable("ActivityCategoryLine");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
@@ -357,7 +358,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
                     b.HasData(
                         new
@@ -397,7 +398,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategory", (string)null);
+                    b.ToTable("ProductCategory");
 
                     b.HasData(
                         new
@@ -437,7 +438,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductCategoryLine", (string)null);
+                    b.ToTable("ProductCategoryLine");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -515,27 +516,16 @@ namespace Victuz_MVC.Migrations
                     b.Navigation("Activity");
                 });
 
-            modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
-                {
-                    b.HasOne("Victuz_MVC.Models.ActivityCategory", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategoryLine", b =>
                 {
                     b.HasOne("Victuz_MVC.Models.ActivityCategory", "ActivityCategory")
-                        .WithMany()
+                        .WithMany("ActivityCategoryLines")
                         .HasForeignKey("ActivityCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Victuz_MVC.Models.Activity", "Activity")
-                        .WithMany()
+                        .WithMany("ActivityCategoryLines")
                         .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -571,7 +561,14 @@ namespace Victuz_MVC.Migrations
 
             modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
                 {
+                    b.Navigation("ActivityCategoryLines");
+
                     b.Navigation("Hosts");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
+                {
+                    b.Navigation("ActivityCategoryLines");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
