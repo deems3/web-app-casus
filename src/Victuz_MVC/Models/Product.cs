@@ -13,6 +13,7 @@ namespace Victuz_MVC.Models
         public string? Description { get; set; }
 
         [Required]
+        [DataType(DataType.Currency)]
         public decimal Price { get; set; }
 
         public List<ProductCategoryLine>? ProductCategoryLines { get; set; }

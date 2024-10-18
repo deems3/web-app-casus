@@ -28,12 +28,11 @@ namespace Victuz_MVC.Models
         public ActivityStatus Status { get; set; } = ActivityStatus.Processing;
 
 
+
         //category connectie
-        public int CategoryId { get; set; }
-
-
+        public int ActivityCategoryLineId { get; set; }
         [Required]
-        public ActivityCategory Category { get; set; } = null!;
+        public List<ActivityCategoryLine>? ActivityCategoryLines { get; set; }
 
     }
 }

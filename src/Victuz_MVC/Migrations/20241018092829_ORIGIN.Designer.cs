@@ -12,8 +12,8 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241011102816_CatetergoryChanges")]
-    partial class CatetergoryChanges
+    [Migration("20241018092829_ORIGIN")]
+    partial class ORIGIN
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,80 +75,6 @@ namespace Victuz_MVC.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator().HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -236,6 +162,82 @@ namespace Victuz_MVC.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
             modelBuilder.Entity("Victuz_MVC.Models.AccountActivity", b =>
                 {
                     b.Property<int>("Id")
@@ -270,14 +272,15 @@ namespace Victuz_MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int>("ActivityCategoryLineId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("Limit")
                         .HasColumnType("int");
@@ -287,14 +290,104 @@ namespace Victuz_MVC.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
-                    b.HasIndex("CategoryId");
+                    b.HasKey("Id");
 
                     b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityCategoryLineId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ActivityCategory");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.ActivityCategoryLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityCategoryId");
+
+                    b.HasIndex("ActivityId");
+
+                    b.ToTable("ActivityCategoryLine");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Dit is een t-shirt",
+                            Name = "T-Shirt",
+                            Price = 10.00m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Dit is een Hoodie",
+                            Name = "Hoodie",
+                            Price = 15.00m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Dit is een petje",
+                            Name = "Pet",
+                            Price = 50.00m
+                        });
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.ProductCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -308,25 +401,47 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityCategory");
+                    b.ToTable("ProductCategory");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "T-Shirt"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Rood"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Zwart"
+                        });
                 });
 
-            modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
+            modelBuilder.Entity("Victuz_MVC.Models.ProductCategoryLine", b =>
                 {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<int?>("ActivityId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("ActivityId");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
-                    b.HasDiscriminator().HasValue("Account");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductCategoryId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductCategoryLine");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -340,7 +455,7 @@ namespace Victuz_MVC.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Victuz_MVC.Models.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -349,7 +464,7 @@ namespace Victuz_MVC.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Victuz_MVC.Models.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -364,7 +479,7 @@ namespace Victuz_MVC.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Victuz_MVC.Models.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -373,11 +488,18 @@ namespace Victuz_MVC.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Victuz_MVC.Models.Account", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
+                {
+                    b.HasOne("Victuz_MVC.Models.Activity", null)
+                        .WithMany("Hosts")
+                        .HasForeignKey("ActivityId");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.AccountActivity", b =>
@@ -397,37 +519,69 @@ namespace Victuz_MVC.Migrations
                     b.Navigation("Activity");
                 });
 
-            modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
+            modelBuilder.Entity("Victuz_MVC.Models.ActivityCategoryLine", b =>
                 {
-                    b.HasOne("Victuz_MVC.Models.ActivityCategory", "Category")
-                        .WithMany("Activities")
-                        .HasForeignKey("CategoryId")
+                    b.HasOne("Victuz_MVC.Models.ActivityCategory", "ActivityCategory")
+                        .WithMany("ActivityCategoryLines")
+                        .HasForeignKey("ActivityCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.HasOne("Victuz_MVC.Models.Activity", "Activity")
+                        .WithMany("ActivityCategoryLines")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("ActivityCategory");
                 });
 
-            modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
+            modelBuilder.Entity("Victuz_MVC.Models.ProductCategoryLine", b =>
                 {
-                    b.HasOne("Victuz_MVC.Models.Activity", null)
-                        .WithMany("Hosts")
-                        .HasForeignKey("ActivityId");
-                });
+                    b.HasOne("Victuz_MVC.Models.ProductCategory", "ProductCategory")
+                        .WithMany("ProductCategoryLines")
+                        .HasForeignKey("ProductCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
-                {
-                    b.Navigation("Hosts");
-                });
+                    b.HasOne("Victuz_MVC.Models.Product", "Product")
+                        .WithMany("ProductCategoryLines")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-            modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
-                {
-                    b.Navigation("Activities");
+                    b.Navigation("Product");
+
+                    b.Navigation("ProductCategory");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
                 {
                     b.Navigation("AccountActivities");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
+                {
+                    b.Navigation("ActivityCategoryLines");
+
+                    b.Navigation("Hosts");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
+                {
+                    b.Navigation("ActivityCategoryLines");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
+                {
+                    b.Navigation("ProductCategoryLines");
+                });
+
+            modelBuilder.Entity("Victuz_MVC.Models.ProductCategory", b =>
+                {
+                    b.Navigation("ProductCategoryLines");
                 });
 #pragma warning restore 612, 618
         }

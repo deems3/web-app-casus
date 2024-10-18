@@ -10,5 +10,9 @@ namespace Victuz_MVC.Models
         [Required]
         [DataType (DataType.Text)]
         public string Name { get; set; } = null!;
+
+
+        public int ActivityCategoryLineId { get; set; }
+        public ICollection<ActivityCategoryLine>? ActivityCategoryLines { get; set; }
     }
 }

@@ -3,21 +3,42 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Victuz_MVC.Migrations
 {
     /// <inheritdoc />
-    public partial class AllMigrations : Migration
+    public partial class ORIGIN : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Activity",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Limit = table.Column<int>(type: "int", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    ActivityCategoryLineId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activity", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "ActivityCategory",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ActivityCategoryLineId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,68 +73,18 @@ namespace Victuz_MVC.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Activity",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Limit = table.Column<int>(type: "int", nullable: false),
-                    DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Activity", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Activity_ActivityCategory_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "ActivityCategory",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductCategoryId = table.Column<int>(type: "int", nullable: true)
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Products_ProductCategory_ProductCategoryId",
-                        column: x => x.ProductCategoryId,
-                        principalTable: "ProductCategory",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -121,7 +92,6 @@ namespace Victuz_MVC.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ActivityId = table.Column<int>(type: "int", nullable: true),
@@ -148,6 +118,79 @@ namespace Victuz_MVC.Migrations
                         column: x => x.ActivityId,
                         principalTable: "Activity",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ActivityCategoryLine",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ActivityId = table.Column<int>(type: "int", nullable: false),
+                    ActivityCategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ActivityCategoryLine", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ActivityCategoryLine_ActivityCategory_ActivityCategoryId",
+                        column: x => x.ActivityCategoryId,
+                        principalTable: "ActivityCategory",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ActivityCategoryLine_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductCategoryLine",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductCategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductCategoryLine", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductCategoryLine_ProductCategory_ProductCategoryId",
+                        column: x => x.ProductCategoryId,
+                        principalTable: "ProductCategory",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductCategoryLine_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -261,6 +304,26 @@ namespace Victuz_MVC.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "ProductCategory",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "T-Shirt" },
+                    { 2, "Rood" },
+                    { 3, "Zwart" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "Description", "Name", "Price" },
+                values: new object[,]
+                {
+                    { 1, "Dit is een t-shirt", "T-Shirt", 10.00m },
+                    { 2, "Dit is een Hoodie", "Hoodie", 15.00m },
+                    { 3, "Dit is een petje", "Pet", 50.00m }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AccountActivity_AccountId",
                 table: "AccountActivity",
@@ -272,9 +335,14 @@ namespace Victuz_MVC.Migrations
                 column: "ActivityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Activity_CategoryId",
-                table: "Activity",
-                column: "CategoryId");
+                name: "IX_ActivityCategoryLine_ActivityCategoryId",
+                table: "ActivityCategoryLine",
+                column: "ActivityCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActivityCategoryLine_ActivityId",
+                table: "ActivityCategoryLine",
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -321,9 +389,14 @@ namespace Victuz_MVC.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_ProductCategoryId",
-                table: "Products",
+                name: "IX_ProductCategoryLine_ProductCategoryId",
+                table: "ProductCategoryLine",
                 column: "ProductCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductCategoryLine_ProductId",
+                table: "ProductCategoryLine",
+                column: "ProductId");
         }
 
         /// <inheritdoc />
@@ -331,6 +404,9 @@ namespace Victuz_MVC.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AccountActivity");
+
+            migrationBuilder.DropTable(
+                name: "ActivityCategoryLine");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -348,7 +424,10 @@ namespace Victuz_MVC.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "ProductCategoryLine");
+
+            migrationBuilder.DropTable(
+                name: "ActivityCategory");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -360,10 +439,10 @@ namespace Victuz_MVC.Migrations
                 name: "ProductCategory");
 
             migrationBuilder.DropTable(
-                name: "Activity");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "ActivityCategory");
+                name: "Activity");
         }
     }
 }
