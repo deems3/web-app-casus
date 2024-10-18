@@ -1,6 +1,0 @@
-@Victuz_API_HostAddress = http://localhost:5124
-
-GET {{Victuz_API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
