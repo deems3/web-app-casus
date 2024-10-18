@@ -45,7 +45,7 @@ namespace Victuz_MVC.Data
                 Name = "Zwart",
             };
 
-            // Product data
+            // Producten
 
             Product product1 = new Product
             {
