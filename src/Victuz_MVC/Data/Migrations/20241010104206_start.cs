@@ -5,7 +5,7 @@
 namespace Victuz_MVC.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class start : Migration
+    public partial class Start : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
