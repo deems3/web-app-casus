@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
 using Victuz_MVC.Data;
+using Victuz_MVC.Models;
 
 namespace Victuz_MVC
 {
@@ -18,7 +19,7 @@ namespace Victuz_MVC
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            builder.Services.AddDefaultIdentity<Account>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>() 
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
@@ -64,16 +65,16 @@ namespace Victuz_MVC
 
             using (var scope = app.Services.CreateScope())
             {
-                var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<Account>>();
 
                 string email = "admin@admin.com";
                 string password = "Admin123!";
 
 
-                 if (await UserManager.FindByEmailAsync(email) == null)
+                if (await UserManager.FindByEmailAsync(email) == null)
                 {
                     // create the user
-                    var user = new IdentityUser();
+                    var user = new Account();
                     user.UserName = email;
                     user.Email = email;
 
@@ -83,7 +84,7 @@ namespace Victuz_MVC
                     // add to role
                     await UserManager.AddToRoleAsync(user, "Admin");
                 }
-  
+
             }
 
             app.Run();
