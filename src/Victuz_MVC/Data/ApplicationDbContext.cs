@@ -35,7 +35,7 @@ namespace Victuz_MVC.Data
                 Name = "Testproduct 1",
                 Description = "Het eerste testproduct",
                 Price = 19.99m,
-                CategoryId = 1
+                //CategoryId = 1
             };
 
             builder.Entity<ProductCategory>().HasData(productCategory1);
