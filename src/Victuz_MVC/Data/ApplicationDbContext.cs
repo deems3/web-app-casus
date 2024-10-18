@@ -53,12 +53,30 @@ namespace Victuz_MVC.Data
                 Name = "T-Shirt",
                 Description = "Dit is een t-shirt",
                 Price = 10.00M,
-            };  
+            };
+
+            Product product2 = new Product
+            {
+                Id = 2,
+                Name = "Hoodie",
+                Description = "Dit is een Hoodie",
+                Price = 15.00M,
+            };
+
+            Product product3 = new Product
+            {
+                Id = 3,
+                Name = "Pet",
+                Description = "Dit is een petje",
+                Price = 50.00M,
+            };
 
             builder.Entity<ProductCategory>().HasData(productCategory1);
             builder.Entity<ProductCategory>().HasData(productCategory2);
             builder.Entity<ProductCategory>().HasData(productCategory3);
             builder.Entity<Product>().HasData(product1);
+            builder.Entity<Product>().HasData(product2);
+            builder.Entity<Product>().HasData(product3);
         }
     }
 }
