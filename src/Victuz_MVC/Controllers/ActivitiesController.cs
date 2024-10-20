@@ -26,7 +26,17 @@ namespace Victuz_MVC.Controllers
         // GET: Activities
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Activity.ToListAsync());
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
+            // Get all activities with corresponding hosts
+            var activities = await _context.Activity.Include(a => a.Hosts).ToListAsync();
+            ViewBag.IsMember = isMember;
+            // ?? = null-coalesence
+            // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
+            ViewBag.UserId = user?.Id ?? null;
+
+            return View(activities);
         }
 
         // GET: Activities/Details/5
@@ -37,7 +47,17 @@ namespace Victuz_MVC.Controllers
                 return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
+            // Get all activities with corresponding hosts
+            ViewBag.IsMember = isMember;
+            // ?? = null-coalesence
+            // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
+            ViewBag.UserId = user?.Id ?? null;
+
             var activity = await _context.Activity
+                .Include(a => a.Hosts)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activity == null)
             {
