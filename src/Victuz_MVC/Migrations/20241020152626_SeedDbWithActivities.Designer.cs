@@ -12,8 +12,8 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241018092829_ORIGIN")]
-    partial class ORIGIN
+    [Migration("20241020152626_SeedDbWithActivities")]
+    partial class SeedDbWithActivities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -272,7 +272,7 @@ namespace Victuz_MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActivityCategoryLineId")
+                    b.Property<int>("ActivityCategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateTime")
@@ -295,7 +295,41 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ActivityCategoryId");
+
                     b.ToTable("Activity");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ActivityCategoryId = 1,
+                            DateTime = new DateTime(2024, 11, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Versla je medestudenten",
+                            Limit = 30,
+                            Name = "Voetbal toernooi",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ActivityCategoryId = 2,
+                            DateTime = new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Bouw & programmeer je eigen BattleBot en versla je medestudenten",
+                            Limit = 30,
+                            Name = "BattleBots",
+                            Status = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ActivityCategoryId = 3,
+                            DateTime = new DateTime(2024, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Leer een eigen AI applicatie te bouwen",
+                            Limit = 13,
+                            Name = "Creatief met AI",
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
@@ -306,9 +340,6 @@ namespace Victuz_MVC.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActivityCategoryLineId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -316,29 +347,23 @@ namespace Victuz_MVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActivityCategory");
-                });
 
-            modelBuilder.Entity("Victuz_MVC.Models.ActivityCategoryLine", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityCategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivityCategoryId");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("ActivityCategoryLine");
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Sport"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Programming"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "AI"
+                        });
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
@@ -519,21 +544,13 @@ namespace Victuz_MVC.Migrations
                     b.Navigation("Activity");
                 });
 
-            modelBuilder.Entity("Victuz_MVC.Models.ActivityCategoryLine", b =>
+            modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
                 {
                     b.HasOne("Victuz_MVC.Models.ActivityCategory", "ActivityCategory")
-                        .WithMany("ActivityCategoryLines")
+                        .WithMany("Activities")
                         .HasForeignKey("ActivityCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Victuz_MVC.Models.Activity", "Activity")
-                        .WithMany("ActivityCategoryLines")
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Activity");
 
                     b.Navigation("ActivityCategory");
                 });
@@ -564,14 +581,12 @@ namespace Victuz_MVC.Migrations
 
             modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
                 {
-                    b.Navigation("ActivityCategoryLines");
-
                     b.Navigation("Hosts");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
                 {
-                    b.Navigation("ActivityCategoryLines");
+                    b.Navigation("Activities");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>

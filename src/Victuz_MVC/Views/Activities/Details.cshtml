@@ -41,14 +41,18 @@
             @Html.DisplayFor(model => model.Status)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ActivityCategoryLineId)
+            Category
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ActivityCategoryLineId)
+            @Html.DisplayFor(model => model.ActivityCategory.Name)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    @if ((ViewBag.UserId is not null && ViewBag.IsMember && Model.Hosts!.Any(h => h.Id == ViewBag.UserId)) ||
+    (ViewBag.UserId is not null && !ViewBag.IsMember))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+    }
     <a asp-action="Index">Back to List</a>
 </div>

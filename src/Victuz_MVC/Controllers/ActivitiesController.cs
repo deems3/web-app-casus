@@ -2,27 +2,63 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
+using Victuz_MVC.ViewModels;
 
 namespace Victuz_MVC.Controllers
 {
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Account> _userManager;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivitiesController(ApplicationDbContext context, UserManager<Account> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Activities
+        // Index is visible for everybody. Only approved activities need to be displayed here.
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Activity.ToListAsync());
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
+            // Get all activities with corresponding hosts
+            var activities = await _context.Activity
+                .Include(a => a.Hosts)
+                .Include(a => a.ActivityCategory)
+                .Where(a => a.Status == Enums.ActivityStatus.Approved)
+                .ToListAsync();
+            ViewBag.IsMember = isMember;
+            // ?? = null-coalesence
+            // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
+            ViewBag.UserId = user?.Id ?? null;
+
+            return View(activities);
+        }
+
+        // New iActionResult for a new view named StatusActivity. This view is for activities with processing status, only visibile for members and admins.
+        public async Task<IActionResult> StatusActivity()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
+            // Get all activities with corresponding hosts
+            var activities = await _context.Activity.Include(a => a.Hosts).Where(a => a.Status == Enums.ActivityStatus.Processing).ToListAsync();
+            ViewBag.IsMember = isMember;
+            // ?? = null-coalesence
+            // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
+            ViewBag.UserId = user?.Id ?? null;
+
+            return View(activities);
         }
 
         // GET: Activities/Details/5
@@ -33,7 +69,18 @@ namespace Victuz_MVC.Controllers
                 return NotFound();
             }
 
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
+            // Get all activities with corresponding hosts
+            ViewBag.IsMember = isMember;
+            // ?? = null-coalesence
+            // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
+            ViewBag.UserId = user?.Id ?? null;
+
             var activity = await _context.Activity
+                .Include(a => a.Hosts)
+                .Include(a => a.ActivityCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activity == null)
             {
@@ -43,41 +90,71 @@ namespace Victuz_MVC.Controllers
             return View(activity);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Activities/Create
         public IActionResult Create()
         {
+            ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
             return View();
         }
 
         // POST: Activities/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.      
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryLineId")] Activity activity)
+        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryId")] CreateActivityViewModel activityViewModel)
         {
             if (ModelState.IsValid)
             {
+                var activity = new Activity
+                {
+                    ActivityCategoryId = activityViewModel.ActivityCategoryId,
+                    DateTime = activityViewModel.DateTime,
+                    Description = activityViewModel.Description,
+                    Hosts = activityViewModel.Hosts,
+                    Limit = activityViewModel.Limit,
+                    Name = activityViewModel.Name,
+                    Status = Enums.ActivityStatus.Approved
+                };
                 _context.Add(activity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(activity);
+            return View(activityViewModel);
         }
 
+        [Authorize(Roles = "Admin,Member")]
         // GET: Activities/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id) // TODO: ADD CHECK IF ROLE IS MEMBER IF ACTIVITY IS OWNED BY MEMBER
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var activity = await _context.Activity.FindAsync(id);
+            // Fetch activiteits and their hosts
+            var activity = await _context.Activity
+                .Include(a => a.ActivityCategory)
+                .Include(a => a.Hosts)
+                .FirstOrDefaultAsync(a => a.Id == id);
             if (activity == null)
             {
                 return NotFound();
             }
+
+            // Get logged in user
+            var user = (await _userManager.GetUserAsync(HttpContext.User))!;
+
+            // Check if user has member role, if so check if member is activity host, if not, dont show activity.
+            if (await _userManager.IsInRoleAsync(user, "Member") && !activity.Hosts!.Any(h => h.Id == user.Id))
+            {
+                return Unauthorized();
+            }
+
+            ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
+
             return View(activity);
         }
 
@@ -85,8 +162,9 @@ namespace Victuz_MVC.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryLineId")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryId")] Activity activity)
         {
             if (id != activity.Id)
             {
@@ -116,6 +194,7 @@ namespace Victuz_MVC.Controllers
             return View(activity);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Activities/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -125,6 +204,7 @@ namespace Victuz_MVC.Controllers
             }
 
             var activity = await _context.Activity
+                .Include(a => a.ActivityCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activity == null)
             {
@@ -134,6 +214,7 @@ namespace Victuz_MVC.Controllers
             return View(activity);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Activities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -27,12 +27,7 @@ namespace Victuz_MVC.Models
         // Status enum
         public ActivityStatus Status { get; set; } = ActivityStatus.Processing;
 
-
-
-        //category connectie
-        public int ActivityCategoryLineId { get; set; }
-        [Required]
-        public List<ActivityCategoryLine>? ActivityCategoryLines { get; set; }
-
+        public int ActivityCategoryId { get; set; }
+        public ActivityCategory? ActivityCategory { get; set; } = null!; // TODO: temporarily made ActivityCategory nullable to bypass FormState validation
     }
 }

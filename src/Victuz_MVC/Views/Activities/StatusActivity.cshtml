@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<Victuz_MVC.Models.Activity>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "StatusActivity";
 }
 
-<h1>Activiteiten overzicht</h1>
+<h1>Status activities</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -28,7 +28,7 @@
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th>
-                Category
+                @Html.DisplayNameFor(model => model.ActivityCategoryId)
             </th>
             <th></th>
         </tr>
@@ -52,7 +52,7 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ActivityCategory.Name)
+                @Html.DisplayFor(modelItem => item.ActivityCategoryId)
             </td>
             <td>
                 @if ((ViewBag.UserId is not null && ViewBag.IsMember && item.Hosts!.Any(h => h.Id == ViewBag.UserId)) ||

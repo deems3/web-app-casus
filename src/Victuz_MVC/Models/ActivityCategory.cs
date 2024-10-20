@@ -4,6 +4,7 @@ namespace Victuz_MVC.Models
 {
     public class ActivityCategory
     {
+        [Key]
         public int Id { get; set; }
 
 
@@ -11,8 +12,6 @@ namespace Victuz_MVC.Models
         [DataType (DataType.Text)]
         public string Name { get; set; } = null!;
 
-
-        public int ActivityCategoryLineId { get; set; }
-        public ICollection<ActivityCategoryLine>? ActivityCategoryLines { get; set; }
+        public ICollection<Activity> Activities { get; set; } = [];
     }
 }

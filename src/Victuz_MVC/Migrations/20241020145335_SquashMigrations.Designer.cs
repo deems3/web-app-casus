@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Victuz_MVC.Data;
 
@@ -11,9 +12,11 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241020145335_SquashMigrations")]
+    partial class SquashMigrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -295,38 +298,6 @@ namespace Victuz_MVC.Migrations
                     b.HasIndex("ActivityCategoryId");
 
                     b.ToTable("Activity");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ActivityCategoryId = 1,
-                            DateTime = new DateTime(2024, 11, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Versla je medestudenten",
-                            Limit = 30,
-                            Name = "Voetbal toernooi",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ActivityCategoryId = 2,
-                            DateTime = new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Bouw & programmeer je eigen BattleBot en versla je medestudenten",
-                            Limit = 30,
-                            Name = "BattleBots",
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ActivityCategoryId = 3,
-                            DateTime = new DateTime(2024, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Leer een eigen AI applicatie te bouwen",
-                            Limit = 13,
-                            Name = "Creatief met AI",
-                            Status = 1
-                        });
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>
@@ -344,23 +315,6 @@ namespace Victuz_MVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ActivityCategory");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Sport"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Programming"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "AI"
-                        });
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>

@@ -67,19 +67,44 @@ namespace Victuz_MVC
             {
                 var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<Account>>();
 
-                string email = "admin@admin.com";
-                string password = "Admin123!";
-
-
-                if (await UserManager.FindByEmailAsync(email) == null)
+                var accounts = new Dictionary<string, string>
                 {
-                    // create the user
-                    var user = new Account();
-                    user.UserName = email;
-                    user.Email = email;
+                    { "demi@demi.nl", "Demi123!" },
+                    { "mees@mees.nl", "Mees123!" },
+                    { "aaron@aaron.nl", "Aaron123!" },
+                    { "martijn@martijn.nl", "Martijn123!" }
+                };
 
-                    // add user to database
-                    await UserManager.CreateAsync(user, password);
+                // email = key, password = value (Dictonary KeyValue pair)
+                foreach (var (email, password) in accounts)
+                {
+                    if (await UserManager.FindByEmailAsync(email) == null)
+                    {
+                        // create the user
+                        var user = new Account();
+                        user.UserName = email;
+                        user.Email = email;
+
+                        // add user to database
+                        await UserManager.CreateAsync(user, password);
+
+                        // add to role
+                        await UserManager.AddToRoleAsync(user, "Member");
+                    }
+                }
+
+                string adminEmail = "admin@admin.com";
+                string adminPassword = "Admin123!";
+
+                if (await UserManager.FindByEmailAsync(adminPassword) == null)
+                {
+                    // create the admin
+                    var user = new Account();
+                    user.UserName = adminEmail;
+                    user.Email = adminEmail;
+
+                    // add admin to database
+                    await UserManager.CreateAsync(user, adminPassword);
 
                     // add to role
                     await UserManager.AddToRoleAsync(user, "Admin");
