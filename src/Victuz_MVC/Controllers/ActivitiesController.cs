@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +15,12 @@ namespace Victuz_MVC.Controllers
     public class ActivitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Account> _userManager;
 
-        public ActivitiesController(ApplicationDbContext context)
+        public ActivitiesController(ApplicationDbContext context, UserManager<Account> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Activities
@@ -43,6 +47,7 @@ namespace Victuz_MVC.Controllers
             return View(activity);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Activities/Create
         public IActionResult Create()
         {
@@ -51,8 +56,9 @@ namespace Victuz_MVC.Controllers
 
         // POST: Activities/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.      
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryLineId")] Activity activity)
         {
@@ -65,19 +71,31 @@ namespace Victuz_MVC.Controllers
             return View(activity);
         }
 
+        [Authorize(Roles = "Admin,Member")]
         // GET: Activities/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id) // TODO: ADD CHECK IF ROLE IS MEMBER IF ACTIVITY IS OWNED BY MEMBER
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var activity = await _context.Activity.FindAsync(id);
+            // Fetch activiteits and their hosts
+            var activity = await _context.Activity.Include(a => a.Hosts).FirstOrDefaultAsync(a => a.Id == id);
             if (activity == null)
             {
                 return NotFound();
             }
+
+            // Get logged in user
+            var user = (await _userManager.GetUserAsync(HttpContext.User))!;
+
+            // Check if user has member role, if so check if member is activity host, if not, dont show activity.
+            if (await _userManager.IsInRoleAsync(user, "Member") && !activity.Hosts!.Any(h => h.Id == user.Id))
+            {
+                return Unauthorized();
+            }
+
             return View(activity);
         }
 
@@ -85,6 +103,7 @@ namespace Victuz_MVC.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryLineId")] Activity activity)
         {
@@ -116,6 +135,7 @@ namespace Victuz_MVC.Controllers
             return View(activity);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Activities/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -134,6 +154,7 @@ namespace Victuz_MVC.Controllers
             return View(activity);
         }
 
+        [Authorize(Roles = "Admin")]
         // POST: Activities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

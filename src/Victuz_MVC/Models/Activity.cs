@@ -31,7 +31,7 @@ namespace Victuz_MVC.Models
 
         //category connectie
         public int ActivityCategoryLineId { get; set; }
-        [Required]
+
         public List<ActivityCategoryLine>? ActivityCategoryLines { get; set; }
 
     }
