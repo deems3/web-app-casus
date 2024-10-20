@@ -32,7 +32,11 @@ namespace Victuz_MVC.Controllers
 
             var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
             // Get all activities with corresponding hosts
-            var activities = await _context.Activity.Include(a => a.Hosts).Where(a => a.Status == Enums.ActivityStatus.Approved).ToListAsync();
+            var activities = await _context.Activity
+                .Include(a => a.Hosts)
+                .Include(a => a.ActivityCategory)
+                .Where(a => a.Status == Enums.ActivityStatus.Approved)
+                .ToListAsync();
             ViewBag.IsMember = isMember;
             // ?? = null-coalesence
             // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
@@ -76,6 +80,7 @@ namespace Victuz_MVC.Controllers
 
             var activity = await _context.Activity
                 .Include(a => a.Hosts)
+                .Include(a => a.ActivityCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activity == null)
             {
@@ -89,6 +94,7 @@ namespace Victuz_MVC.Controllers
         // GET: Activities/Create
         public IActionResult Create()
         {
+            ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
             return View();
         }
 
@@ -98,13 +104,13 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryLineId")] CreateActivityViewModel activityViewModel)
+        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryId")] CreateActivityViewModel activityViewModel)
         {
             if (ModelState.IsValid)
             {
                 var activity = new Activity
                 {
-                    ActivityCategoryLineId = activityViewModel.ActivityCategoryLineId,
+                    ActivityCategoryId = activityViewModel.ActivityCategoryId,
                     DateTime = activityViewModel.DateTime,
                     Description = activityViewModel.Description,
                     Hosts = activityViewModel.Hosts,
@@ -129,7 +135,10 @@ namespace Victuz_MVC.Controllers
             }
 
             // Fetch activiteits and their hosts
-            var activity = await _context.Activity.Include(a => a.Hosts).FirstOrDefaultAsync(a => a.Id == id);
+            var activity = await _context.Activity
+                .Include(a => a.ActivityCategory)
+                .Include(a => a.Hosts)
+                .FirstOrDefaultAsync(a => a.Id == id);
             if (activity == null)
             {
                 return NotFound();
@@ -143,6 +152,8 @@ namespace Victuz_MVC.Controllers
             {
                 return Unauthorized();
             }
+
+            ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
 
             return View(activity);
         }
@@ -193,6 +204,7 @@ namespace Victuz_MVC.Controllers
             }
 
             var activity = await _context.Activity
+                .Include(a => a.ActivityCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activity == null)
             {

@@ -27,12 +27,7 @@ namespace Victuz_MVC.Models
         // Status enum
         public ActivityStatus Status { get; set; } = ActivityStatus.Processing;
 
-
-
-        //category connectie
-        public int ActivityCategoryLineId { get; set; } // one to one
-
-        public List<ActivityCategoryLine>? ActivityCategoryLines { get; set; } // list? dat is icollection.....
-
+        public int ActivityCategoryId { get; set; }
+        public ActivityCategory ActivityCategory { get; set; } = null!;
     }
 }

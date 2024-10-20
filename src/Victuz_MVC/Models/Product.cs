@@ -16,6 +16,6 @@ namespace Victuz_MVC.Models
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
 
-        public List<ProductCategoryLine>? ProductCategoryLines { get; set; }
+        public ICollection<ProductCategoryLine> ProductCategoryLines { get; set; } = [];
     }
 }

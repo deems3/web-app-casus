@@ -39,9 +39,8 @@
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ActivityCategoryLineId" class="control-label"></label>
-                <input asp-for="ActivityCategoryLineId" class="form-control" />
-                <span asp-validation-for="ActivityCategoryLineId" class="text-danger"></span>
+                <label asp-for="ActivityCategoryId" class="control-label">Category</label>
+                <select asp-for="ActivityCategoryId" asp-items="ViewBag.ActivityCategoryId" class="form-control"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
