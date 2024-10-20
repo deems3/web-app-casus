@@ -24,13 +24,30 @@ namespace Victuz_MVC.Controllers
         }
 
         // GET: Activities
+        // Index is visible for everybody. Only approved activities need to be displayed here.
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
             var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
             // Get all activities with corresponding hosts
-            var activities = await _context.Activity.Include(a => a.Hosts).ToListAsync();
+            var activities = await _context.Activity.Include(a => a.Hosts).Where(a => a.Status == Enums.ActivityStatus.Approved).ToListAsync();
+            ViewBag.IsMember = isMember;
+            // ?? = null-coalesence
+            // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
+            ViewBag.UserId = user?.Id ?? null;
+
+            return View(activities);
+        }
+
+        // New iActionResult for a new view named StatusActivity. This view is for activities with processing status, only visibile for members and admins.
+        public async Task<IActionResult> StatusActivity()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
+            // Get all activities with corresponding hosts
+            var activities = await _context.Activity.Include(a => a.Hosts).Where(a => a.Status == Enums.ActivityStatus.Processing).ToListAsync();
             ViewBag.IsMember = isMember;
             // ?? = null-coalesence
             // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
