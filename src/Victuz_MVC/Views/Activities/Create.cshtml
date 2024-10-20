@@ -1,4 +1,5 @@
-﻿@model Victuz_MVC.Models.Activity
+﻿@using Victuz_MVC.Enums
+@model Victuz_MVC.ViewModels.CreateActivityViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -33,14 +34,8 @@
                 <span asp-validation-for="DateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ActivityCategoryLineId" class="control-label"></label>
-                <input asp-for="ActivityCategoryLineId" class="form-control" />
-                <span asp-validation-for="ActivityCategoryLineId" class="text-danger"></span>
+                <label asp-for="ActivityCategoryId" class="control-label">Category</label>
+                <select asp-for="ActivityCategoryId" asp-items="ViewBag.ActivityCategoryId" class="form-control"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
