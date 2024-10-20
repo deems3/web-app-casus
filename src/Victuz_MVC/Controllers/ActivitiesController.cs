@@ -164,7 +164,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryLineId")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryId")] Activity activity)
         {
             if (id != activity.Id)
             {

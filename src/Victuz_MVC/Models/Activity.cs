@@ -28,6 +28,6 @@ namespace Victuz_MVC.Models
         public ActivityStatus Status { get; set; } = ActivityStatus.Processing;
 
         public int ActivityCategoryId { get; set; }
-        public ActivityCategory ActivityCategory { get; set; } = null!;
+        public ActivityCategory? ActivityCategory { get; set; } = null!; // TODO: temporarily made ActivityCategory nullable to bypass FormState validation
     }
 }

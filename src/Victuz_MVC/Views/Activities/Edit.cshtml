@@ -1,4 +1,5 @@
-﻿@model Victuz_MVC.Models.Activity
+﻿@using Victuz_MVC.Enums
+@model Victuz_MVC.Models.Activity
 
 @{
     ViewData["Title"] = "Edit";
@@ -35,7 +36,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"></select>
+                <select asp-for="Status" asp-items="Html.GetEnumSelectList<ActivityStatus>()" class="form-control"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
