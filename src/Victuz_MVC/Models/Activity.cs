@@ -30,9 +30,9 @@ namespace Victuz_MVC.Models
 
 
         //category connectie
-        public int ActivityCategoryLineId { get; set; }
+        public int ActivityCategoryLineId { get; set; } // one to one
 
-        public List<ActivityCategoryLine>? ActivityCategoryLines { get; set; }
+        public List<ActivityCategoryLine>? ActivityCategoryLines { get; set; } // list? dat is icollection.....
 
     }
 }

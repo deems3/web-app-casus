@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
+using Victuz_MVC.ViewModels;
 
 namespace Victuz_MVC.Controllers
 {
@@ -97,15 +98,25 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryLineId")] Activity activity)
+        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryLineId")] CreateActivityViewModel activityViewModel)
         {
             if (ModelState.IsValid)
             {
+                var activity = new Activity
+                {
+                    ActivityCategoryLineId = activityViewModel.ActivityCategoryLineId,
+                    DateTime = activityViewModel.DateTime,
+                    Description = activityViewModel.Description,
+                    Hosts = activityViewModel.Hosts,
+                    Limit = activityViewModel.Limit,
+                    Name = activityViewModel.Name,
+                    Status = Enums.ActivityStatus.Approved
+                };
                 _context.Add(activity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(activity);
+            return View(activityViewModel);
         }
 
         [Authorize(Roles = "Admin,Member")]
