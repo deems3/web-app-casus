@@ -34,7 +34,6 @@
                 <span asp-validation-for="DateTime" class="text-danger"></span>
             </div>
             <div>
-                 @* @Html.ListBoxFor(m => m.Hosts, new MultiSelectList(ViewBag.Hosts, "Id", "Name")) *@
                 <label asp-for="HostIds" class="control-label">Hosts</label>
                 <select asp-for="HostIds" asp-items="ViewBag.Hosts" class="form-control"></select>
             </div>
