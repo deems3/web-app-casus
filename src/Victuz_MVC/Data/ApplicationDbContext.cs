@@ -24,6 +24,10 @@ namespace Victuz_MVC.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Activity>()
+                .HasMany(e => e.Hosts)
+                .WithMany(e => e.Activities);
+
             // Category data
             ProductCategory productCategory1 = new ProductCategory
             {

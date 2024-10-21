@@ -19,10 +19,8 @@ namespace Victuz_MVC.Models
 
         public DateTime DateTime { get; set; }
 
-
         // Responsible people
-        public ICollection<Account>? Hosts { get; set; }
-
+        public ICollection<Account> Hosts { get; } = [];
 
         // Status enum
         public ActivityStatus Status { get; set; } = ActivityStatus.Processing;

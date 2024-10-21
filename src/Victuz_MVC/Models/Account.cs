@@ -7,6 +7,6 @@ namespace Victuz_MVC.Models
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
 
-        public ICollection<AccountActivity> AccountActivities { get; } = [];
+        public ICollection<Activity> Activities { get; } = [];
     }
 }

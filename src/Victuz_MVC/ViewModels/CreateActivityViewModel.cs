@@ -9,6 +9,7 @@ namespace Victuz_MVC.ViewModels
         public int Limit { get; set; }
         public DateTime DateTime { get; set; }
         public int ActivityCategoryId { get; set; }
-        public ICollection<Account>? Hosts { get; set; }
+        public List<Account>? Hosts { get; set; }
+        public List<string>? HostIds { get; set; }
     }
 }
