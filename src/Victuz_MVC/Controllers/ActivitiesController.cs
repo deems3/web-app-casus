@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
 using Victuz_MVC.ViewModels;
@@ -52,7 +53,7 @@ namespace Victuz_MVC.Controllers
 
             var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
             // Get all activities with corresponding hosts
-            var activities = await _context.Activity.Include(a => a.Hosts).Where(a => a.Status == Enums.ActivityStatus.Processing).ToListAsync();
+            var activities = await _context.Activity.Include(a => a.Hosts).Include(a => a.ActivityCategory).Where(a => a.Status == Enums.ActivityStatus.Processing).ToListAsync();
             ViewBag.IsMember = isMember;
             // ?? = null-coalesence
             // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
@@ -90,6 +91,8 @@ namespace Victuz_MVC.Controllers
             return View(activity);
         }
 
+
+
         [Authorize(Roles = "Admin")]
         // GET: Activities/Create
         public IActionResult Create()
@@ -113,17 +116,65 @@ namespace Victuz_MVC.Controllers
                     ActivityCategoryId = activityViewModel.ActivityCategoryId,
                     DateTime = activityViewModel.DateTime,
                     Description = activityViewModel.Description,
-                    Hosts = activityViewModel.Hosts,
                     Limit = activityViewModel.Limit,
                     Name = activityViewModel.Name,
                     Status = Enums.ActivityStatus.Approved
                 };
+                activity.Hosts.AddRange(activityViewModel.Hosts);
                 _context.Add(activity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(activityViewModel);
         }
+
+        // SUGGEST ACTIVITY FOR MEMBERS ONLY !! 
+        [Authorize]
+        public IActionResult Suggest()
+        {
+            ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
+            ViewData["Hosts"] = new MultiSelectList(_context.Accounts, "Id", "Email");
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Member")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Suggest([Bind("Name,Description,Limit,DateTime,HostIds,ActivityCategoryId")] CreateActivityViewModel activityViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var activity = new Activity
+                {
+                    ActivityCategoryId = activityViewModel.ActivityCategoryId,
+                    DateTime = activityViewModel.DateTime,
+                    Description = activityViewModel.Description,
+                    Limit = activityViewModel.Limit,
+                    Name = activityViewModel.Name,
+                    Status = Enums.ActivityStatus.Processing
+                };
+                var hosts = new List<Account>();
+                if (activityViewModel.HostIds is not null)
+                {
+                    foreach (var id in activityViewModel.HostIds)
+                    {
+                        var host = await _context.Accounts.FirstOrDefaultAsync(h => h.Id == id);
+                        if (host is not null)
+                        {
+                            hosts.Add(host);
+                        }
+                    }
+                }
+
+                activity.Hosts.AddRange(hosts);
+                _context.Add(activity);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View("Suggest", activityViewModel);
+        }
+
+
 
         [Authorize(Roles = "Admin,Member")]
         // GET: Activities/Edit/5

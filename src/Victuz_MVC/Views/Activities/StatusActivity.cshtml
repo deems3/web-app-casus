@@ -28,7 +28,10 @@
                 @Html.DisplayNameFor(model => model.Status)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ActivityCategoryId)
+                @Html.DisplayNameFor(model => model.Hosts)
+            </th>
+            <th>
+                Category
             </th>
             <th></th>
         </tr>
@@ -52,7 +55,16 @@
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ActivityCategoryId)
+                <ul>
+                        @foreach (var host in item.Hosts)
+                        {
+                            <li>@host.Email</li>
+                        }
+                </ul>
+            </td>
+                
+                <td>
+                @Html.DisplayFor(modelItem => item.ActivityCategory!.Name)
             </td>
             <td>
                 @if ((ViewBag.UserId is not null && ViewBag.IsMember && item.Hosts!.Any(h => h.Id == ViewBag.UserId)) ||

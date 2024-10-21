@@ -31,4 +31,11 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Activities\Suggest.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
