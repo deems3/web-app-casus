@@ -7,7 +7,12 @@
 <h1>Activiteiten overzicht</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    @if (!ViewBag.IsMember)
+    {
+        <a asp-action="Create">Create New</a>
+    }
+        
+    <a asp-action="Suggest">Stel activiteit voor</a>
 </p>
 <table class="table">
     <thead>
