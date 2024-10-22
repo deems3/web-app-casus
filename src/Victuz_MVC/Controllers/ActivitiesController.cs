@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
+using Victuz_MVC.Services;
 using Victuz_MVC.ViewModels;
 
 namespace Victuz_MVC.Controllers
@@ -18,11 +19,13 @@ namespace Victuz_MVC.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Account> _userManager;
+        private readonly PictureService _pictureService;
 
-        public ActivitiesController(ApplicationDbContext context, UserManager<Account> userManager)
+        public ActivitiesController(ApplicationDbContext context, UserManager<Account> userManager, PictureService pictureService)
         {
             _context = context;
             _userManager = userManager;
+            _pictureService = pictureService;
         }
 
         // GET: Activities
@@ -35,6 +38,7 @@ namespace Victuz_MVC.Controllers
             // Get all activities with corresponding hosts
             var activities = await _context.Activity
                 .Include(a => a.Hosts)
+                .Include(a => a.Picture)
                 .Include(a => a.ActivityCategory)
                 .Where(a => a.Status == Enums.ActivityStatus.Approved)
                 .ToListAsync();
@@ -53,7 +57,12 @@ namespace Victuz_MVC.Controllers
 
             var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
             // Get all activities with corresponding hosts
-            var activities = await _context.Activity.Include(a => a.Hosts).Include(a => a.ActivityCategory).Where(a => a.Status == Enums.ActivityStatus.Processing).ToListAsync();
+            var activities = await _context.Activity
+                .Include(a => a.Hosts)
+                .Include(a => a.Picture)
+                .Include(a => a.ActivityCategory)
+                .Where(a => a.Status == Enums.ActivityStatus.Processing)
+                .ToListAsync();
             ViewBag.IsMember = isMember;
             // ?? = null-coalesence
             // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
@@ -81,6 +90,7 @@ namespace Victuz_MVC.Controllers
 
             var activity = await _context.Activity
                 .Include(a => a.Hosts)
+                .Include(a => a.Picture)
                 .Include(a => a.ActivityCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (activity == null)
@@ -90,7 +100,6 @@ namespace Victuz_MVC.Controllers
 
             return View(activity);
         }
-
 
 
         [Authorize(Roles = "Admin")]
@@ -107,7 +116,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryId")] CreateActivityViewModel activityViewModel)
+        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryId")] CreateActivityViewModel activityViewModel, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -120,7 +129,13 @@ namespace Victuz_MVC.Controllers
                     Name = activityViewModel.Name,
                     Status = Enums.ActivityStatus.Approved
                 };
-                activity.Hosts.AddRange(activityViewModel.Hosts);
+
+                if (file != null)
+                {
+                    var picture = await _pictureService.CreatePicture(file);
+                    activity.Picture = picture;
+                }
+
                 _context.Add(activity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -188,6 +203,7 @@ namespace Victuz_MVC.Controllers
             // Fetch activiteits and their hosts
             var activity = await _context.Activity
                 .Include(a => a.ActivityCategory)
+                .Include(a => a.Picture)
                 .Include(a => a.Hosts)
                 .FirstOrDefaultAsync(a => a.Id == id);
             if (activity == null)
@@ -215,7 +231,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryId")] Activity activity)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryId")] Activity activity, IFormFile? file)
         {
             if (id != activity.Id)
             {
@@ -226,7 +242,24 @@ namespace Victuz_MVC.Controllers
             {
                 try
                 {
-                    _context.Update(activity);
+                    Picture? removedPicture = null;
+                    var existingEntry = _context.Activity.Include(a => a.Picture).First(p => p.Id == activity.Id);
+                    if (file != null)
+                    {
+                        
+                        // Delete existing file from filesystem
+                        if (existingEntry.Picture is not null)
+                        {
+                            _pictureService.DeletePicture(existingEntry.Picture.FilePath);
+                            removedPicture = existingEntry.Picture;
+                        }
+
+                        var picture = await _pictureService.CreatePicture(file);
+                        existingEntry.Picture.FilePath = picture.FilePath;
+                        existingEntry.Picture.FileName = picture.FileName;
+                    }
+
+                    _context.Update(existingEntry);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
