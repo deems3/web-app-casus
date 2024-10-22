@@ -27,5 +27,8 @@ namespace Victuz_MVC.Models
 
         public int ActivityCategoryId { get; set; }
         public ActivityCategory? ActivityCategory { get; set; } = null!; // TODO: temporarily made ActivityCategory nullable to bypass FormState validation
+
+        public int? PictureId { get; set; }
+        public Picture? Picture { get; set; }
     }
 }

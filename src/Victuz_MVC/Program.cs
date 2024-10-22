@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.WebSockets;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
+using Victuz_MVC.Services;
 
 namespace Victuz_MVC
 {
@@ -23,6 +24,8 @@ namespace Victuz_MVC
                 .AddRoles<IdentityRole>() 
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddScoped<PictureService>();
 
             var app = builder.Build();
 

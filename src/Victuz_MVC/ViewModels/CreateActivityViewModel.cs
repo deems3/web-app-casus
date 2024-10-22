@@ -11,5 +11,8 @@ namespace Victuz_MVC.ViewModels
         public int ActivityCategoryId { get; set; }
         public List<Account>? Hosts { get; set; }
         public List<string>? HostIds { get; set; }
+
+        public int? PictureId { get; set; }
+        public Picture? Picture { get; set; } 
     }
 }
