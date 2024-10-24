@@ -34,7 +34,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("HostsId");
 
-                    b.ToTable("AccountActivity");
+                    b.ToTable("AccountActivity", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -283,7 +283,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("PictureId");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activity", (string)null);
 
                     b.HasData(
                         new
@@ -332,7 +332,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityCategory");
+                    b.ToTable("ActivityCategory", (string)null);
 
                     b.HasData(
                         new
@@ -370,7 +370,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Picture");
+                    b.ToTable("Picture", (string)null);
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
@@ -393,7 +393,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
 
                     b.HasData(
                         new
@@ -433,7 +433,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategory");
+                    b.ToTable("ProductCategory", (string)null);
 
                     b.HasData(
                         new
@@ -473,7 +473,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductCategoryLine");
+                    b.ToTable("ProductCategoryLine", (string)null);
                 });
 
             modelBuilder.Entity("AccountActivity", b =>

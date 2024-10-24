@@ -7,5 +7,7 @@ namespace Victuz_MVC.Models
         [Key]
         public int Id { get; set; }
         public decimal TotalPrice { get; set; }
+
+        public ICollection<OrderProduct>? OrderProducts { get; set; }     
     }
 }
