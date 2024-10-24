@@ -9,5 +9,8 @@ namespace Victuz_MVC.Models
         public decimal TotalPrice { get; set; }
 
         public ICollection<OrderProduct>? OrderProducts { get; set; }     
+
+        public int AccountId { get; set; }
+        public Account? Account { get; set; }
     }
 }
