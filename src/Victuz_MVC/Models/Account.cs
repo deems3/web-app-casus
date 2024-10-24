@@ -8,5 +8,7 @@ namespace Victuz_MVC.Models
         public string? LastName { get; set; }
 
         public ICollection<Activity> Activities { get; } = [];
+
+        public ICollection<Order> Orders { get; } = [];
     }
 }
