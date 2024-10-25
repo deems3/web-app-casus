@@ -121,18 +121,17 @@ namespace Victuz_MVC.Data
                 ProductId = 1,
             };
 
+            builder.Entity<OrderProduct>().HasData(orderProduct1);
+
             //Orders
             Order order1 = new Order
             {
                 Id = 1,
                 TotalPrice = 60.00M,
-                OrderProducts = new List<OrderProduct> { orderProduct1 }
-
+                AccountId = 1,
             };
 
-            //builder.Entity<Order>().HasData(order1);
-            //builder.Entity<Order>().HasData(order2);
-            //builder.Entity<Order>().HasData(order3);
+            builder.Entity<Order>().HasData(order1);
 
 
             // Categories
