@@ -12,8 +12,8 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241025185343_DummyDataOrderLineEnOrderFix")]
-    partial class DummyDataOrderLineEnOrderFix
+    [Migration("20241025190653_DummydataVoorOrderOrderlineEnOrderFix")]
+    partial class DummydataVoorOrderOrderlineEnOrderFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
