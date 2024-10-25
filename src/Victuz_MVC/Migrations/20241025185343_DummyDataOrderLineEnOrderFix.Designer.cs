@@ -12,8 +12,8 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241024081340_Dummydata+Orderfix")]
-    partial class DummydataOrderfix
+    [Migration("20241025185343_DummyDataOrderLineEnOrderFix")]
+    partial class DummyDataOrderLineEnOrderFix
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -377,6 +377,14 @@ namespace Victuz_MVC.Migrations
                     b.HasIndex("AccountId1");
 
                     b.ToTable("Order");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccountId = 1,
+                            TotalPrice = 60.00m
+                        });
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.OrderProduct", b =>
@@ -403,6 +411,15 @@ namespace Victuz_MVC.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderProduct");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            OrderId = 1,
+                            ProductAmount = 6,
+                            ProductId = 1
+                        });
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Picture", b =>
