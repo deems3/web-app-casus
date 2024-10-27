@@ -13,6 +13,7 @@ namespace Victuz_MVC.Data
         public DbSet<Product> Products { get; set; } = default!;
         public DbSet<ProductCategory> ProductCategory { get; set; } = default!;
         public DbSet<Picture> Picture { get; set; } = default!;
+        public DbSet<Enrollment> Enrollments { get; set; } = default!;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
         {
