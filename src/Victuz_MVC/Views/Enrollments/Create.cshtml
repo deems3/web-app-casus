@@ -1,0 +1,42 @@
+﻿@model Victuz_MVC.ViewModels.CreateEnrollmentViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    var isReadOnly = (ViewData["IsReadOnly"] as bool?) ?? false;
+}
+
+<h1>Create</h1>
+
+<h4>Enrollment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ActivityId" class="control-label">Activiteit</label>
+                @if (isReadOnly)
+                {
+                    <p>@ViewData["ActivityName"]</p>
+                    <select hidden asp-for="ActivityId" class ="form-control" asp-items="ViewBag.ActivityId"></select>
+                }
+                else
+                {
+                    <select asp-for="ActivityId" class="form-control" asp-items="ViewBag.ActivityId"></select>
+                }
+            </div>
+            <span asp-validation-for="ActivityId" class="text-danger"></span>
+            <div class="form-group">
+                <input type="submit" value="Inschrijven" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
