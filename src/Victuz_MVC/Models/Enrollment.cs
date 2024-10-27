@@ -3,7 +3,7 @@
     public class Enrollment
     {
         public int Id { get; set; }
-        public DateTime EnrolledAt { get; set; }
+        public DateTime EnrolledAt { get; set; } = DateTime.UtcNow;
 
         // Account is a GUID in the database and this is converted into a string
         public string AccountId { get; set; } = null!;
