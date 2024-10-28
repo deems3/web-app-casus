@@ -31,6 +31,9 @@
                 @Html.DisplayNameFor(model => model.Hosts)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Location)
+            </th>
+            <th>
                 Category
             </th>
             <th></th>
@@ -61,6 +64,9 @@
                             <li>@host.Email</li>
                         }
                 </ul>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Location)
             </td>
                 
                 <td>

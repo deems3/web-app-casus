@@ -116,7 +116,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryId")] CreateActivityViewModel activityViewModel, IFormFile? file)
+        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryId,Location")] CreateActivityViewModel activityViewModel, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -155,7 +155,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Member")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Suggest([Bind("Name,Description,Limit,DateTime,HostIds,ActivityCategoryId")] CreateActivityViewModel activityViewModel, IFormFile? file)
+        public async Task<IActionResult> Suggest([Bind("Name,Description,Limit,DateTime,HostIds,ActivityCategoryId,Location")] CreateActivityViewModel activityViewModel, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -249,7 +249,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryId")] Activity activity, IFormFile? file)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryId,Location")] Activity activity, IFormFile? file)
         {
             if (id != activity.Id)
             {
