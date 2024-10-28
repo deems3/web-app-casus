@@ -20,7 +20,6 @@ namespace Victuz_MVC.Data
         
         }
 
-
         // Vaste Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -196,11 +195,6 @@ namespace Victuz_MVC.Data
             builder.Entity<Activity>().HasData(act1);
             builder.Entity<Activity>().HasData(act2);
             builder.Entity<Activity>().HasData(act3);
-
-
-           
-
-            
         }
     }
 }

@@ -193,12 +193,20 @@ namespace Victuz_MVC.Controllers
 
         [Authorize(Roles = "Admin,Member")]
         // GET: Activities/Edit/5
-        public async Task<IActionResult> Edit(int? id) // TODO: ADD CHECK IF ROLE IS MEMBER IF ACTIVITY IS OWNED BY MEMBER
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user is null)
+            {
+                return Unauthorized();
+            }
+
+            var isMember = await _userManager.IsInRoleAsync(user, "Member");
 
             // Fetch activiteits and their hosts
             var activity = await _context.Activity
@@ -206,13 +214,16 @@ namespace Victuz_MVC.Controllers
                 .Include(a => a.Picture)
                 .Include(a => a.Hosts)
                 .FirstOrDefaultAsync(a => a.Id == id);
+
             if (activity == null)
             {
                 return NotFound();
             }
 
-            // Get logged in user
-            var user = (await _userManager.GetUserAsync(HttpContext.User))!;
+            if (isMember && !activity.Hosts.Any(h => h.Id == user.Id))
+            {
+                return Unauthorized();
+            }
 
             // Check if user has member role, if so check if member is activity host, if not, dont show activity.
             if (await _userManager.IsInRoleAsync(user, "Member") && !activity.Hosts!.Any(h => h.Id == user.Id))
@@ -243,7 +254,8 @@ namespace Victuz_MVC.Controllers
                 try
                 {
                     Picture? removedPicture = null;
-                    var existingEntry = _context.Activity.Include(a => a.Picture).First(p => p.Id == activity.Id);
+                    // Fetch the existing entry so we can override the picture
+                    var existingEntry = _context.Activity.AsNoTracking().Include(a => a.Picture).First(p => p.Id == activity.Id);
                     if (file != null)
                     {
                         
@@ -255,11 +267,10 @@ namespace Victuz_MVC.Controllers
                         }
 
                         var picture = await _pictureService.CreatePicture(file);
-                        existingEntry.Picture.FilePath = picture.FilePath;
-                        existingEntry.Picture.FileName = picture.FileName;
+                        activity.Picture = picture;
                     }
 
-                    _context.Update(existingEntry);
+                    _context.Update(activity);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

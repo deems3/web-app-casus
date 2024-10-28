@@ -98,9 +98,15 @@ namespace Victuz_MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ActivityId")] CreateEnrollmentViewModel enrollment) // TODO: viewmodel
+        public async Task<IActionResult> Create([Bind("Id,ActivityId")] CreateEnrollmentViewModel enrollment)
         {
-            var user = (await _userManager.GetUserAsync(HttpContext.User))!;
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (user is null)
+            {
+                return Unauthorized();
+            }
+
             if (ModelState.IsValid)
             {
                 var activity = await _context.Activity.Include(a => a.Enrollments).FirstOrDefaultAsync(a => a.Id == enrollment.ActivityId);
