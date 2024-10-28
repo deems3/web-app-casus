@@ -68,16 +68,12 @@
                 @Html.DisplayFor(modelItem => item.ActivityCategory.Name)
             </td>
             <td>
-                @if ((ViewBag.UserId is not null && ViewBag.IsMember && item.Hosts!.Any(h => h.Id == ViewBag.UserId)) ||
-                (ViewBag.UserId is not null && !ViewBag.IsMember)
-                )
+                @if (User.IsInRole("Admin"))
                 {
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                 }
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                @if ((ViewBag.UserId is not null && ViewBag.IsMember && item.Hosts!.Any(h => h.Id == ViewBag.UserId)) ||
-                (ViewBag.UserId is not null && !ViewBag.IsMember)
-                )
+                @if (User.IsInRole("Admin"))
                 {
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>    
                 }
