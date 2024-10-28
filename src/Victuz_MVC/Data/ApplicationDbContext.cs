@@ -13,6 +13,7 @@ namespace Victuz_MVC.Data
         public DbSet<Product> Products { get; set; } = default!;
         public DbSet<ProductCategory> ProductCategory { get; set; } = default!;
         public DbSet<Picture> Picture { get; set; } = default!;
+        public DbSet<Enrollment> Enrollments { get; set; } = default!;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
         {
@@ -28,6 +29,7 @@ namespace Victuz_MVC.Data
             builder.Entity<Activity>()
                 .HasMany(e => e.Hosts)
                 .WithMany(e => e.Activities);
+
 
             // Category data
             ProductCategory productCategory1 = new ProductCategory
@@ -52,8 +54,8 @@ namespace Victuz_MVC.Data
             builder.Entity<ProductCategory>().HasData(productCategory2);
             builder.Entity<ProductCategory>().HasData(productCategory3);
 
-            // Producten
 
+            // Producten
             Product product1 = new Product
             {
                 Id = 1,
@@ -83,6 +85,56 @@ namespace Victuz_MVC.Data
             builder.Entity<Product>().HasData(product2);
             builder.Entity<Product>().HasData(product3);
 
+
+            //Linking products and productcategories
+            ProductCategoryLine productCategoryLine1 = new ProductCategoryLine
+            {
+                Id = 1,
+                ProductId = 1,
+                ProductCategoryId = 1
+            };
+
+            ProductCategoryLine productCategoryLine2 = new ProductCategoryLine
+            {
+                Id = 2,
+                ProductId = 2,
+                ProductCategoryId = 2
+            };
+
+            ProductCategoryLine productCategoryLine3 = new ProductCategoryLine
+            {
+                Id = 3,
+                ProductId = 3,
+                ProductCategoryId = 3
+            };
+
+            builder.Entity<ProductCategoryLine>().HasData(productCategoryLine1);
+            builder.Entity<ProductCategoryLine>().HasData(productCategoryLine2);
+            builder.Entity<ProductCategoryLine>().HasData(productCategoryLine3);
+
+
+            //OrderProducts
+            OrderProduct orderProduct1 = new OrderProduct
+            {
+                Id = 1,
+                OrderId = 1,
+                ProductAmount = 6,
+                ProductId = 1,
+            };
+
+            builder.Entity<OrderProduct>().HasData(orderProduct1);
+
+            //Orders
+            Order order1 = new Order
+            {
+                Id = 1,
+                TotalPrice = 60.00M,
+                AccountId = 1,
+            };
+
+            builder.Entity<Order>().HasData(order1);
+
+
             // Categories
             var cat1 = new ActivityCategory
             {
@@ -105,6 +157,7 @@ namespace Victuz_MVC.Data
             builder.Entity<ActivityCategory>().HasData(cat1);
             builder.Entity<ActivityCategory>().HasData(cat2);
             builder.Entity<ActivityCategory>().HasData(cat3);
+
 
             // Activities
             var act1 = new Activity
@@ -143,6 +196,11 @@ namespace Victuz_MVC.Data
             builder.Entity<Activity>().HasData(act1);
             builder.Entity<Activity>().HasData(act2);
             builder.Entity<Activity>().HasData(act3);
+
+
+           
+
+            
         }
     }
 }

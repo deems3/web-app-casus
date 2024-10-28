@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Victuz_MVC.Data;
 
@@ -11,9 +12,11 @@ using Victuz_MVC.Data;
 namespace Victuz_MVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241025190653_DummydataVoorOrderOrderlineEnOrderFix")]
+    partial class DummydataVoorOrderOrderlineEnOrderFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,33 +355,6 @@ namespace Victuz_MVC.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Victuz_MVC.Models.Enrollment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AccountId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ActivityId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EnrolledAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("Enrollments");
-                });
-
             modelBuilder.Entity("Victuz_MVC.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -673,25 +649,6 @@ namespace Victuz_MVC.Migrations
                     b.Navigation("Picture");
                 });
 
-            modelBuilder.Entity("Victuz_MVC.Models.Enrollment", b =>
-                {
-                    b.HasOne("Victuz_MVC.Models.Account", "Account")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Victuz_MVC.Models.Activity", "Activity")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Activity");
-                });
-
             modelBuilder.Entity("Victuz_MVC.Models.Order", b =>
                 {
                     b.HasOne("Victuz_MVC.Models.Account", "Account")
@@ -741,14 +698,7 @@ namespace Victuz_MVC.Migrations
 
             modelBuilder.Entity("Victuz_MVC.Models.Account", b =>
                 {
-                    b.Navigation("Enrollments");
-
                     b.Navigation("Orders");
-                });
-
-            modelBuilder.Entity("Victuz_MVC.Models.Activity", b =>
-                {
-                    b.Navigation("Enrollments");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.ActivityCategory", b =>

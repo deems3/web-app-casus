@@ -49,6 +49,11 @@ namespace Victuz_MVC
             app.UseAuthorization();
 
             app.MapControllerRoute(
+                 name: "createEnrollment",
+                pattern: "Enrollments/Create/{activityId?}",
+                defaults: new { controller = "Enrollments", action = "Create" });
+
+            app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapRazorPages();
