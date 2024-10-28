@@ -116,7 +116,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryId")] CreateActivityViewModel activityViewModel, IFormFile? file)
+        public async Task<IActionResult> Create([Bind("Name,Description,Limit,DateTime,ActivityCategoryId,Location")] CreateActivityViewModel activityViewModel, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -148,14 +148,14 @@ namespace Victuz_MVC.Controllers
         public IActionResult Suggest()
         {
             ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
-            ViewData["Hosts"] = new MultiSelectList(_context.Accounts, "Id", "Email");
+            ViewData["Hosts"] = new MultiSelectList(_context.Accounts, "Id", "FirstName");
             return View();
         }
 
         [HttpPost]
         [Authorize(Roles = "Member")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Suggest([Bind("Name,Description,Limit,DateTime,HostIds,ActivityCategoryId")] CreateActivityViewModel activityViewModel)
+        public async Task<IActionResult> Suggest([Bind("Name,Description,Limit,DateTime,HostIds,ActivityCategoryId,Location")] CreateActivityViewModel activityViewModel, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -168,6 +168,13 @@ namespace Victuz_MVC.Controllers
                     Name = activityViewModel.Name,
                     Status = Enums.ActivityStatus.Processing
                 };
+
+                if (file != null)
+                {
+                    var picture = await _pictureService.CreatePicture(file);
+                    activity.Picture = picture;
+                }
+
                 var hosts = new List<Account>();
                 if (activityViewModel.HostIds is not null)
                 {
@@ -242,7 +249,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryId")] Activity activity, IFormFile? file)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Limit,DateTime,Status,ActivityCategoryId,Location")] Activity activity, IFormFile? file)
         {
             if (id != activity.Id)
             {
@@ -269,6 +276,15 @@ namespace Victuz_MVC.Controllers
                         var picture = await _pictureService.CreatePicture(file);
                         activity.Picture = picture;
                     }
+                    else
+                    {
+                        if (existingEntry.Picture is not null)
+                        {
+                            activity.Picture = existingEntry.Picture;
+                        }
+                    }
+
+                    activity.Hosts.AddRange(existingEntry.Hosts);
 
                     _context.Update(activity);
                     await _context.SaveChangesAsync();

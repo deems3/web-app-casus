@@ -34,7 +34,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("HostsId");
 
-                    b.ToTable("AccountActivity", (string)null);
+                    b.ToTable("AccountActivity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -266,6 +266,10 @@ namespace Victuz_MVC.Migrations
                     b.Property<int>("Limit")
                         .HasColumnType("int");
 
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(25)
@@ -283,7 +287,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("PictureId");
 
-                    b.ToTable("Activity", (string)null);
+                    b.ToTable("Activity");
 
                     b.HasData(
                         new
@@ -293,6 +297,7 @@ namespace Victuz_MVC.Migrations
                             DateTime = new DateTime(2024, 11, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Versla je medestudenten",
                             Limit = 30,
+                            Location = "",
                             Name = "Voetbal toernooi",
                             Status = 1
                         },
@@ -303,6 +308,7 @@ namespace Victuz_MVC.Migrations
                             DateTime = new DateTime(2024, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Bouw & programmeer je eigen BattleBot en versla je medestudenten",
                             Limit = 30,
+                            Location = "",
                             Name = "BattleBots",
                             Status = 1
                         },
@@ -313,6 +319,7 @@ namespace Victuz_MVC.Migrations
                             DateTime = new DateTime(2024, 12, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Leer een eigen AI applicatie te bouwen",
                             Limit = 13,
+                            Location = "",
                             Name = "Creatief met AI",
                             Status = 1
                         });
@@ -332,7 +339,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ActivityCategory", (string)null);
+                    b.ToTable("ActivityCategory");
 
                     b.HasData(
                         new
@@ -376,7 +383,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ActivityId");
 
-                    b.ToTable("Enrollments", (string)null);
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Order", b =>
@@ -400,7 +407,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("AccountId1");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
 
                     b.HasData(
                         new
@@ -434,7 +441,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderProduct", (string)null);
+                    b.ToTable("OrderProduct");
 
                     b.HasData(
                         new
@@ -464,7 +471,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Picture", (string)null);
+                    b.ToTable("Picture");
                 });
 
             modelBuilder.Entity("Victuz_MVC.Models.Product", b =>
@@ -487,7 +494,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
 
                     b.HasData(
                         new
@@ -527,7 +534,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductCategory", (string)null);
+                    b.ToTable("ProductCategory");
 
                     b.HasData(
                         new
@@ -567,7 +574,7 @@ namespace Victuz_MVC.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductCategoryLine", (string)null);
+                    b.ToTable("ProductCategoryLine");
 
                     b.HasData(
                         new

@@ -33,5 +33,7 @@ namespace Victuz_MVC.Models
 
         public int? PictureId { get; set; }
         public Picture? Picture { get; set; }
+
+        public string Location { get; set; } = string.Empty;
     }
 }

@@ -14,5 +14,6 @@ namespace Victuz_MVC.ViewModels
 
         public int? PictureId { get; set; }
         public Picture? Picture { get; set; } 
+        public string Location { get; set; } = string.Empty;
     }
 }

@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Suggest">
+        <form asp-action="Suggest" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -22,6 +22,11 @@
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control" />
+                <span asp-validation-for="Location" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Limit" class="control-label"></label>
@@ -40,6 +45,10 @@
             <div class="form-group">
                 <label asp-for="ActivityCategoryId" class="control-label">Category</label>
                 <select asp-for="ActivityCategoryId" asp-items="ViewBag.ActivityCategoryId" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Afbeelding</label>
+                <input name="file" type="file" class="form-control" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Bevestig" class="btn btn-primary" />
