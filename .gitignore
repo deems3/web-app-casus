@@ -370,3 +370,4 @@ FodyWeavers.xsd
 obj/
 bin/
 uploads/*
+!uploads/.gitkeep
