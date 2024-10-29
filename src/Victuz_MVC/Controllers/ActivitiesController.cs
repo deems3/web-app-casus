@@ -14,7 +14,8 @@ using Victuz_MVC.Services;
 using Victuz_MVC.ViewModels;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text; // Nodig voor webhook notificatie
+using System.Text;
+using System.Runtime.ExceptionServices; // Nodig voor webhook notificatie
 
 namespace Victuz_MVC.Controllers
 {
@@ -208,8 +209,17 @@ namespace Victuz_MVC.Controllers
                     ReferenceHandler = ReferenceHandler.Preserve,
                     WriteIndented = true
                 };
+
+
+                var categoryName = await _context.ActivityCategory
+                    .Where(category => category.Id == activity.ActivityCategoryId)
+                    .Select(category => category.Name)
+                    .FirstOrDefaultAsync();
+
+
                 var payload = JsonSerializer.Serialize(new { 
-                    Data = activity, 
+                    Data = activity,
+                    Category = categoryName,
                     Hosts = activity.Hosts.Select(host => new { host.FirstName, host.Email })}, 
                     options);
 
