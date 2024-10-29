@@ -21,7 +21,6 @@ namespace Victuz_MVC.Models
 
         // Responsible people
         public ICollection<Account> Hosts { get; } = [];
-
         // Enrolled students
         public ICollection<Enrollment> Enrollments { get; } = [];
 
