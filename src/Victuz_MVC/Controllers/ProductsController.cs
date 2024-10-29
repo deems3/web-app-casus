@@ -18,9 +18,10 @@ namespace Victuz_MVC.Controllers
         private readonly ApplicationDbContext _context;
         private readonly PictureService _pictureService;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, PictureService pictureService)
         {
             _context = context;
+            _pictureService = pictureService;
         }
 
         // GET: Products
