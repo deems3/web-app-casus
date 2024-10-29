@@ -13,6 +13,8 @@
     <thead>
         <tr>
             <th>
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
@@ -32,16 +34,23 @@
                 {
                     <img src="@item.Picture.FilePath" width="100" />
                 }
+                else {
+                    <span>No Image Available</span>
+                }
             </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
+
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
+
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
