@@ -15,7 +15,8 @@ using Victuz_MVC.ViewModels;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text;
-using System.Runtime.ExceptionServices; // Nodig voor webhook notificatie
+using System.Runtime.ExceptionServices;
+using Victuz_MVC.Enums; // Nodig voor webhook notificatie
 
 namespace Victuz_MVC.Controllers
 {
@@ -317,8 +318,64 @@ namespace Victuz_MVC.Controllers
 
                     activity.Hosts.AddRange(existingEntry.Hosts);
 
-                    _context.Update(activity);
-                    await _context.SaveChangesAsync();
+
+                    var dbActivity = await _context.Activity
+                        .Include(a => a.Hosts)
+                        .FirstOrDefaultAsync(a => a.Id == activity.Id);
+
+
+                    if (dbActivity != null)
+                    {
+
+                        if (activity.Status != dbActivity.Status)
+                        {
+                            var url = "https://eo6rv3rphu7vb23.m.pipedream.net";
+
+                            var options = new JsonSerializerOptions
+                            {
+                                ReferenceHandler = ReferenceHandler.Preserve,
+                                WriteIndented = true
+                            };
+
+                            string status;
+
+                            if (activity.Status == ActivityStatus.Approved)
+                            {
+                                status = "Approved";
+                            }
+                            else if (activity.Status == ActivityStatus.Declined)
+                            {
+                                status = "Declined";
+                            }
+                            else
+                            {
+                                status = "Processing";
+                            }
+
+                            var hostIds = activity.Hosts.Select(h => h.Id).ToList(); //
+
+                            var accounts = await _context.Accounts // 
+                                .Where(a => hostIds.Contains(a.Id)) //
+                                .ToListAsync(); //
+
+                            var payload = JsonSerializer.Serialize(new
+                            {
+                                Data = activity,
+                                Status = status,
+                                Hosts = dbActivity.Hosts.Select(host => new { host.FirstName, host.Email })
+                            }, options);
+
+                            var content = new StringContent(payload, Encoding.UTF8, "application/json");
+                            await _httpClient.PostAsync(url, content);
+                        }
+
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
