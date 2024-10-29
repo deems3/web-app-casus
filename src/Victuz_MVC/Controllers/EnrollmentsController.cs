@@ -184,13 +184,8 @@ namespace Victuz_MVC.Controllers
         {
             var enrollment = await _context.Enrollments
                             .Include(e => e.Account)
-                            //.Include(e => e.AccountId)
-
                             .Include(e => e.Activity)
                             .FirstOrDefaultAsync(m => m.Id == id);
-
-
-
 
             if (enrollment != null)
             {
@@ -207,15 +202,12 @@ namespace Victuz_MVC.Controllers
 
                 await _httpClient.PostAsync(url, content);
 
-
-
                 _context.Enrollments.Remove(enrollment);
-
             }
-
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool EnrollmentExists(int id)
