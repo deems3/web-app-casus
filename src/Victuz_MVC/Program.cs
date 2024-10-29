@@ -27,6 +27,8 @@ namespace Victuz_MVC
 
             builder.Services.AddScoped<PictureService>();
 
+            builder.Services.AddHttpClient();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -80,7 +82,8 @@ namespace Victuz_MVC
                     { "demi@demi.nl", "Demi123!" },
                     { "mees@mees.nl", "Mees123!" },
                     { "aaron@aaron.nl", "Aaron123!" },
-                    { "martijn@martijn.nl", "Martijn123!" }
+                    { "martijn@martijn.nl", "Martijn123!" },
+                    { "weningmartijn@gmail.com", "Martijn123!" } // Graag deze niet gebruiken om mails te testen.
                 };
 
                 // email = key, password = value (Dictonary KeyValue pair)

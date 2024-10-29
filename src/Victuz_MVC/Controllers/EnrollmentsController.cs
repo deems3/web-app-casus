@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,19 +12,22 @@ using Microsoft.EntityFrameworkCore;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
 using Victuz_MVC.ViewModels;
+using System.Text.Json; // Nodig voor webhook notificatie
 
 namespace Victuz_MVC.Controllers
 {
     [Authorize]
     public class EnrollmentsController : Controller
     {
+        private readonly HttpClient _httpClient;
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Account> _userManager;
 
-        public EnrollmentsController(ApplicationDbContext context, UserManager<Account> userManager)
+        public EnrollmentsController(ApplicationDbContext context, UserManager<Account> userManager, HttpClient httpClient)
         {
             _context = context;
             _userManager = userManager;
+            _httpClient = httpClient;
         }
 
         // GET: Enrollments
@@ -135,6 +140,13 @@ namespace Victuz_MVC.Controllers
                     ActivityId = enrollment.ActivityId,
                     EnrolledAt = DateTime.UtcNow,
                 };
+
+                    var url = "https://eobgobpreaytb0k.m.pipedream.net";
+                    var payload = JsonSerializer.Serialize(new { Data = user, enrollment, activity });
+                    var content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+                    await _httpClient.PostAsync(url, content);
+
 
                 _context.Add(entity);
                 await _context.SaveChangesAsync();
