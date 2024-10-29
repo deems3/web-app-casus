@@ -15,7 +15,8 @@ using Victuz_MVC.ViewModels;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text;
-using System.Runtime.ExceptionServices; // Nodig voor webhook notificatie
+using System.Runtime.ExceptionServices;
+using Victuz_MVC.Enums; // Nodig voor webhook notificatie
 
 namespace Victuz_MVC.Controllers
 {
@@ -322,40 +323,56 @@ namespace Victuz_MVC.Controllers
 
 
 
-                    var dbActivity = await _context.Activity.FirstOrDefaultAsync(a => a.Id == activity.Id);
+                    var dbActivity = await _context.Activity
+                        .Include(a => a.Hosts)
+                        .FirstOrDefaultAsync(a => a.Id == activity.Id);
 
-                    if (dbActivity != null && activity.Status != dbActivity.Status)
+                    if (dbActivity != null)
                     {
-                        var url = "https://eo6rv3rphu7vb23.m.pipedream.net";
 
-                        var options = new JsonSerializerOptions
+                        if (activity.Status != dbActivity.Status)
                         {
-                            ReferenceHandler = ReferenceHandler.Preserve,
-                            WriteIndented = true
-                        };
+                            var url = "https://eo6rv3rphu7vb23.m.pipedream.net";
 
-                        var payload = JsonSerializer.Serialize(new
-                        {
-                            Data = activity,
-                            Hosts = activity.Hosts?.Select(host => new { host.FirstName, host.Email }) ?? Enumerable.Empty<object>()
-                        },
-                            options);
+                            var options = new JsonSerializerOptions
+                            {
+                                ReferenceHandler = ReferenceHandler.Preserve,
+                                WriteIndented = true
+                            };
 
-                        var content = new StringContent(payload, Encoding.UTF8, "application/json");
+                            string status;
 
-                        await _httpClient.PostAsync(url, content);
+                            if (activity.Status == ActivityStatus.Approved)
+                            {
+                                status = "Approved";
+                            }
+                            else if (activity.Status == ActivityStatus.Declined)
+                            {
+                                status = "Declined";
+                            }
+                            else
+                            {
+                                status = "Processing";
+                            }
+
+                            var payload = JsonSerializer.Serialize(new
+                            {
+                                Data = activity,
+                                Status = status,
+                                Hosts = activity.Hosts?.Select(host => new { host.FirstName, host.Email }) ?? Enumerable.Empty<object>()
+                            }, options);
+
+                            var content = new StringContent(payload, Encoding.UTF8, "application/json");
+                            await _httpClient.PostAsync(url, content);
+                        }
+
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return NotFound();
                     }
 
-
-
-
-
-
-
-
-
-                    _context.Update(activity);
-                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
