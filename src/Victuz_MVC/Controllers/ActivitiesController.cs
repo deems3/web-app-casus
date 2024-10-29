@@ -317,6 +317,43 @@ namespace Victuz_MVC.Controllers
 
                     activity.Hosts.AddRange(existingEntry.Hosts);
 
+
+
+
+
+
+                    var dbActivity = await _context.Activity.FirstOrDefaultAsync(a => a.Id == activity.Id);
+
+                    if (dbActivity != null && activity.Status != dbActivity.Status)
+                    {
+                        var url = "https://eo6rv3rphu7vb23.m.pipedream.net";
+
+                        var options = new JsonSerializerOptions
+                        {
+                            ReferenceHandler = ReferenceHandler.Preserve,
+                            WriteIndented = true
+                        };
+
+                        var payload = JsonSerializer.Serialize(new
+                        {
+                            Data = activity,
+                            Hosts = activity.Hosts?.Select(host => new { host.FirstName, host.Email }) ?? Enumerable.Empty<object>()
+                        },
+                            options);
+
+                        var content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+                        await _httpClient.PostAsync(url, content);
+                    }
+
+
+
+
+
+
+
+
+
                     _context.Update(activity);
                     await _context.SaveChangesAsync();
                 }
