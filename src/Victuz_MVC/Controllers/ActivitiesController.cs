@@ -319,10 +319,6 @@ namespace Victuz_MVC.Controllers
                     activity.Hosts.AddRange(existingEntry.Hosts);
 
 
-
-
-
-
                     var dbActivity = await _context.Activity
                         .Include(a => a.Hosts)
                         .FirstOrDefaultAsync(a => a.Id == activity.Id);
