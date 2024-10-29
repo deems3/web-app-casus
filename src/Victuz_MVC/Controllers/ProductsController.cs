@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +8,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
+using Victuz_MVC.Services;
+using Victuz_MVC.ViewModels;
 
 namespace Victuz_MVC.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly PictureService _pictureService;
 
         public ProductsController(ApplicationDbContext context)
         {
@@ -54,15 +58,28 @@ namespace Victuz_MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price")] Product product)
+        public async Task<IActionResult> Create([Bind("Name,Description,Price")] CreateProductViewModel productViewModel, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
+                var product = new Product
+                {
+                    Name = productViewModel.Name,
+                    Description = productViewModel.Description,
+                    Price = productViewModel.Price,
+                };
+
+                if (file != null)
+                {
+                    var picture = await _pictureService.CreatePicture(file);
+                    product.Picture = picture;
+                }
+
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(product);
+            return View(productViewModel);
         }
 
         // GET: Products/Edit/5
