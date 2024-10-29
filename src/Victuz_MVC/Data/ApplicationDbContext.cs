@@ -167,6 +167,7 @@ namespace Victuz_MVC.Data
                 Limit = 30,
                 DateTime = DateTime.Parse("2024-11-23"),
                 Status = Enums.ActivityStatus.Approved,
+                Location = "Sportveld",
                 ActivityCategoryId = 1
             };
 
@@ -178,6 +179,7 @@ namespace Victuz_MVC.Data
                 Limit = 30,
                 DateTime = DateTime.Parse("2024-11-25"),
                 Status = Enums.ActivityStatus.Approved,
+                Location = "Lokaal 1",
                 ActivityCategoryId = 2
             };
 
@@ -189,6 +191,7 @@ namespace Victuz_MVC.Data
                 Limit = 13,
                 DateTime = DateTime.Parse("2024-12-10"),
                 Status = Enums.ActivityStatus.Approved,
+                Location = "Lokaal 2",
                 ActivityCategoryId = 3
             };
 
