@@ -13,7 +13,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="green navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/Images/victuz500x500.png" alt="Victuz Logo" style="height: 60px;" />
@@ -28,43 +28,43 @@
 
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link whitetext" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Activities" asp-action="Index">Activiteiten</a>
+                            <a class="nav-link whitetext" asp-area="" asp-controller="Activities" asp-action="Index">Activiteiten</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">WebShop</a>
+                            <a class="nav-link whitetext" asp-area="" asp-controller="Products" asp-action="Index">WebShop</a>
                         </li>
 
                         <li class="nav-item">
                             @if (User.IsInRole("Admin"))
                             {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Activities" asp-action="StatusActivity">Activiteit Suggesties</a>
+                                <a class="nav-link whitetext" asp-area="" asp-controller="Activities" asp-action="StatusActivity">Activiteit Suggesties</a>
                             }
                         </li>
 
                         <li class="nav-item">
                             @if (User.IsInRole("Admin"))
                             {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="ActivityCategories" asp-action="Index">Activiteit categorieën</a>
+                                <a class="nav-link whitetext" asp-area="" asp-controller="ActivityCategories" asp-action="Index">Activiteit categorieën</a>
                             }
                         </li>
 
                         <li class="nav-item">
                             @if (User.IsInRole("Admin"))
                             {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="ProductCategories" asp-action="Index">Product categorieën</a>
+                                <a class="nav-link whitetext" asp-area="" asp-controller="ProductCategories" asp-action="Index">Product categorieën</a>
                             }
                         </li>
 
                         <li class="nav-item">
                             @if (User.IsInRole("Member"))
                             {
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Enrollments" asp-action="Index">Ingeschreven Activiteiten</a>
+                                <a class="nav-link whitetext" asp-area="" asp-controller="Enrollments" asp-action="Index">Ingeschreven Activiteiten</a>
                             }
                         </li>
 
