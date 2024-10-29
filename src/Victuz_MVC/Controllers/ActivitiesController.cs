@@ -323,6 +323,7 @@ namespace Victuz_MVC.Controllers
                         .Include(a => a.Hosts)
                         .FirstOrDefaultAsync(a => a.Id == activity.Id);
 
+
                     if (dbActivity != null)
                     {
 
@@ -351,11 +352,17 @@ namespace Victuz_MVC.Controllers
                                 status = "Processing";
                             }
 
+                            var hostIds = activity.Hosts.Select(h => h.Id).ToList(); //
+
+                            var accounts = await _context.Accounts // 
+                                .Where(a => hostIds.Contains(a.Id)) //
+                                .ToListAsync(); //
+
                             var payload = JsonSerializer.Serialize(new
                             {
                                 Data = activity,
                                 Status = status,
-                                Hosts = activity.Hosts?.Select(host => new { host.FirstName, host.Email }) ?? Enumerable.Empty<object>()
+                                Hosts = dbActivity.Hosts.Select(host => new { host.FirstName, host.Email })
                             }, options);
 
                             var content = new StringContent(payload, Encoding.UTF8, "application/json");
