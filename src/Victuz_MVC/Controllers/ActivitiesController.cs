@@ -199,9 +199,6 @@ namespace Victuz_MVC.Controllers
                 activity.Hosts.AddRange(hosts);
                 _context.Add(activity);
 
-
-
-
                 var url = "https://eoyk4vg91shywto.m.pipedream.net";
 
                 var options = new JsonSerializerOptions
@@ -210,12 +207,10 @@ namespace Victuz_MVC.Controllers
                     WriteIndented = true
                 };
 
-
                 var categoryName = await _context.ActivityCategory
                     .Where(category => category.Id == activity.ActivityCategoryId)
                     .Select(category => category.Name)
                     .FirstOrDefaultAsync();
-
 
                 var payload = JsonSerializer.Serialize(new { 
                     Data = activity,
@@ -227,13 +222,11 @@ namespace Victuz_MVC.Controllers
 
                 await _httpClient.PostAsync(url, content);
 
-
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View("Suggest", activityViewModel);
         }
-
 
 
         [Authorize(Roles = "Admin,Member")]
