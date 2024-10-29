@@ -27,4 +27,7 @@ body {
 
 .whitetext {
     color: snow !important;
+    font-size: 1.15rem;
+    font-weight: 500;
+    font-family: "Poppins"
 }
