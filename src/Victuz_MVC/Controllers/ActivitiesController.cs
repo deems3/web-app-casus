@@ -171,7 +171,7 @@ namespace Victuz_MVC.Controllers
                 return Unauthorized();
             }
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && activityViewModel.Hosts?.Count == 2)
             {
                 var activity = new Activity
                 {
@@ -237,6 +237,9 @@ namespace Victuz_MVC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            
+            ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
+            ViewData["Hosts"] = new MultiSelectList(_context.Accounts, "Id", "FirstName");
             return View("Suggest", activityViewModel);
         }
 
@@ -348,31 +351,16 @@ namespace Victuz_MVC.Controllers
                                 WriteIndented = true
                             };
 
-                            string status;
+                            var hostIds = activity.Hosts.Select(h => h.Id).ToList();
 
-                            if (activity.Status == ActivityStatus.Approved)
-                            {
-                                status = "Approved";
-                            }
-                            else if (activity.Status == ActivityStatus.Declined)
-                            {
-                                status = "Declined";
-                            }
-                            else
-                            {
-                                status = "Processing";
-                            }
-
-                            var hostIds = activity.Hosts.Select(h => h.Id).ToList(); //
-
-                            var accounts = await _context.Accounts // 
-                                .Where(a => hostIds.Contains(a.Id)) //
-                                .ToListAsync(); //
+                            var accounts = await _context.Accounts
+                                .Where(a => hostIds.Contains(a.Id))
+                                .ToListAsync();
 
                             var payload = JsonSerializer.Serialize(new
                             {
                                 Data = activity,
-                                Status = status,
+                                Status = activity.Status.ToString(),
                                 Hosts = dbActivity.Hosts.Select(host => new { host.FirstName, host.Email })
                             }, options);
 
