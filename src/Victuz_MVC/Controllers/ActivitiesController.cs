@@ -134,7 +134,8 @@ namespace Victuz_MVC.Controllers
                     Description = activityViewModel.Description,
                     Limit = activityViewModel.Limit,
                     Name = activityViewModel.Name,
-                    Status = Enums.ActivityStatus.Approved
+                    Status = Enums.ActivityStatus.Approved,
+                    Location = activityViewModel.Location
                 };
 
                 if (file != null)
@@ -164,6 +165,12 @@ namespace Victuz_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Suggest([Bind("Name,Description,Limit,DateTime,HostIds,ActivityCategoryId,Location")] CreateActivityViewModel activityViewModel, IFormFile? file)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user is null)
+            {
+                return Unauthorized();
+            }
+
             if (ModelState.IsValid)
             {
                 var activity = new Activity
@@ -184,7 +191,11 @@ namespace Victuz_MVC.Controllers
                     activity.Picture = picture;
                 }
 
-                var hosts = new List<Account>();
+                var hosts = new List<Account>()
+                {
+                    user
+                };
+
                 if (activityViewModel.HostIds is not null)
                 {
                     foreach (var id in activityViewModel.HostIds)
