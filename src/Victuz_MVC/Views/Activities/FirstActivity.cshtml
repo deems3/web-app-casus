@@ -1,0 +1,14 @@
+﻿@model Victuz_MVC.Models.Activity
+
+<h2>Eerstvolgende Activiteit</h2>
+@if (Model != null)
+{
+    <p>Naam: @Model.Name</p>
+    <p>Beschrijving: @Model.Description</p>
+    <p>Datum en tijd: @Model.DateTime.ToString("dd-MM-yyyy HH:mm")</p>
+    <p>Locatie: @Model.Location</p> 
+}
+else
+{
+    <p>Er zijn momenteel geen geplande activiteiten.</p>
+}
