@@ -171,7 +171,7 @@ namespace Victuz_MVC.Controllers
                 return Unauthorized();
             }
 
-            if (ModelState.IsValid && activityViewModel.Hosts?.Count == 2)
+            if (ModelState.IsValid && activityViewModel.HostIds?.Count == 2)
             {
                 var activity = new Activity
                 {
@@ -333,15 +333,10 @@ namespace Victuz_MVC.Controllers
                     activity.Hosts.AddRange(existingEntry.Hosts);
 
 
-                    var dbActivity = await _context.Activity
-                        .Include(a => a.Hosts)
-                        .FirstOrDefaultAsync(a => a.Id == activity.Id);
-
-
-                    if (dbActivity != null)
+                    if (existingEntry != null)
                     {
 
-                        if (activity.Status != dbActivity.Status)
+                        if (activity.Status != existingEntry.Status)
                         {
                             var url = "https://eo6rv3rphu7vb23.m.pipedream.net";
 
@@ -361,13 +356,14 @@ namespace Victuz_MVC.Controllers
                             {
                                 Data = activity,
                                 Status = activity.Status.ToString(),
-                                Hosts = dbActivity.Hosts.Select(host => new { host.FirstName, host.Email })
+                                Hosts = existingEntry.Hosts.Select(host => new { host.FirstName, host.Email })
                             }, options);
 
                             var content = new StringContent(payload, Encoding.UTF8, "application/json");
                             await _httpClient.PostAsync(url, content);
                         }
 
+                        _context.Activity.Update(activity);
                         await _context.SaveChangesAsync();
                     }
                     else
