@@ -40,7 +40,7 @@
             </div>
             <div>
                 <label asp-for="HostIds" class="control-label">Hosts</label>
-                <select asp-for="HostIds" asp-items="ViewBag.Hosts" class="form-control"></select>
+                <select asp-for="HostIds" multiple="multiple" id="hostSelector" asp-items="ViewBag.Hosts" class="form-control"></select>
             </div>
             <div class="form-group">
                 <label asp-for="ActivityCategoryId" class="control-label">Category</label>
@@ -55,6 +55,17 @@
             </div>
         </form>
     </div>
+    <script>
+        const hostSelector = document.getElementById('hostSelector');
+        hostSelector.addEventListener('change', (e) => {
+            const selectedOptions = Array.from(e.target.options).filter(o => o.selected);
+
+            if (selectedOptions.length > 2) {
+                selectedOptions[selectedOptions.length - 1].selected = false;
+                alert("Je mag maar 2 opties selecteren.")
+            }
+        })
+    </script>
 </div>
 
 <div>

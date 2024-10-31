@@ -199,5 +199,6 @@ namespace Victuz_MVC.Data
             builder.Entity<Activity>().HasData(act2);
             builder.Entity<Activity>().HasData(act3);
         }
+        public DbSet<Victuz_MVC.Models.Order> Order { get; set; } = default!;
     }
 }

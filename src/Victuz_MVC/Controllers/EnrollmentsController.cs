@@ -12,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
 using Victuz_MVC.ViewModels;
-using System.Text.Json; // Nodig voor webhook notificatie
+using System.Text.Json;
+using System.Text.Json.Serialization; // Nodig voor webhook notificatie
 
 namespace Victuz_MVC.Controllers
 {
@@ -181,14 +182,32 @@ namespace Victuz_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var enrollment = await _context.Enrollments.FindAsync(id);
+            var enrollment = await _context.Enrollments
+                            .Include(e => e.Account)
+                            .Include(e => e.Activity)
+                            .FirstOrDefaultAsync(m => m.Id == id);
+
             if (enrollment != null)
             {
+                var url = "https://eomw1k0wa3oaj8t.m.pipedream.net";
+
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+                var payload = JsonSerializer.Serialize(new { Data = enrollment }, options);
+
+                var content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+                await _httpClient.PostAsync(url, content);
+
                 _context.Enrollments.Remove(enrollment);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+
         }
 
         private bool EnrollmentExists(int id)

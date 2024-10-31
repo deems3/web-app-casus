@@ -12,6 +12,11 @@ using Victuz_MVC.Data;
 using Victuz_MVC.Models;
 using Victuz_MVC.Services;
 using Victuz_MVC.ViewModels;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text;
+using System.Runtime.ExceptionServices;
+using Victuz_MVC.Enums; // Nodig voor webhook notificatie
 
 namespace Victuz_MVC.Controllers
 {
@@ -19,13 +24,15 @@ namespace Victuz_MVC.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Account> _userManager;
+        private readonly HttpClient _httpClient;
         private readonly PictureService _pictureService;
 
-        public ActivitiesController(ApplicationDbContext context, UserManager<Account> userManager, PictureService pictureService)
+        public ActivitiesController(ApplicationDbContext context, UserManager<Account> userManager, PictureService pictureService, HttpClient httpClient)
         {
             _context = context;
             _userManager = userManager;
             _pictureService = pictureService;
+            _httpClient = httpClient;
         }
 
         // GET: Activities
@@ -127,7 +134,8 @@ namespace Victuz_MVC.Controllers
                     Description = activityViewModel.Description,
                     Limit = activityViewModel.Limit,
                     Name = activityViewModel.Name,
-                    Status = Enums.ActivityStatus.Approved
+                    Status = Enums.ActivityStatus.Approved,
+                    Location = activityViewModel.Location
                 };
 
                 if (file != null)
@@ -157,11 +165,18 @@ namespace Victuz_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Suggest([Bind("Name,Description,Limit,DateTime,HostIds,ActivityCategoryId,Location")] CreateActivityViewModel activityViewModel, IFormFile? file)
         {
-            if (ModelState.IsValid)
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user is null)
+            {
+                return Unauthorized();
+            }
+
+            if (ModelState.IsValid && activityViewModel.Hosts?.Count == 2)
             {
                 var activity = new Activity
                 {
                     ActivityCategoryId = activityViewModel.ActivityCategoryId,
+                    Location = activityViewModel.Location,
                     DateTime = activityViewModel.DateTime,
                     Description = activityViewModel.Description,
                     Limit = activityViewModel.Limit,
@@ -169,13 +184,18 @@ namespace Victuz_MVC.Controllers
                     Status = Enums.ActivityStatus.Processing
                 };
 
+
                 if (file != null)
                 {
                     var picture = await _pictureService.CreatePicture(file);
                     activity.Picture = picture;
                 }
 
-                var hosts = new List<Account>();
+                var hosts = new List<Account>()
+                {
+                    user
+                };
+
                 if (activityViewModel.HostIds is not null)
                 {
                     foreach (var id in activityViewModel.HostIds)
@@ -190,12 +210,38 @@ namespace Victuz_MVC.Controllers
 
                 activity.Hosts.AddRange(hosts);
                 _context.Add(activity);
+
+                var url = "https://eoyk4vg91shywto.m.pipedream.net";
+
+                var options = new JsonSerializerOptions
+                {
+                    ReferenceHandler = ReferenceHandler.Preserve,
+                    WriteIndented = true
+                };
+
+                var categoryName = await _context.ActivityCategory
+                    .Where(category => category.Id == activity.ActivityCategoryId)
+                    .Select(category => category.Name)
+                    .FirstOrDefaultAsync();
+
+                var payload = JsonSerializer.Serialize(new { 
+                    Data = activity,
+                    Category = categoryName,
+                    Hosts = activity.Hosts.Select(host => new { host.FirstName, host.Email })}, 
+                    options);
+
+                var content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+                await _httpClient.PostAsync(url, content);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            
+            ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
+            ViewData["Hosts"] = new MultiSelectList(_context.Accounts, "Id", "FirstName");
             return View("Suggest", activityViewModel);
         }
-
 
 
         [Authorize(Roles = "Admin,Member")]
@@ -286,8 +332,49 @@ namespace Victuz_MVC.Controllers
 
                     activity.Hosts.AddRange(existingEntry.Hosts);
 
-                    _context.Update(activity);
-                    await _context.SaveChangesAsync();
+
+                    var dbActivity = await _context.Activity
+                        .Include(a => a.Hosts)
+                        .FirstOrDefaultAsync(a => a.Id == activity.Id);
+
+
+                    if (dbActivity != null)
+                    {
+
+                        if (activity.Status != dbActivity.Status)
+                        {
+                            var url = "https://eo6rv3rphu7vb23.m.pipedream.net";
+
+                            var options = new JsonSerializerOptions
+                            {
+                                ReferenceHandler = ReferenceHandler.Preserve,
+                                WriteIndented = true
+                            };
+
+                            var hostIds = activity.Hosts.Select(h => h.Id).ToList();
+
+                            var accounts = await _context.Accounts
+                                .Where(a => hostIds.Contains(a.Id))
+                                .ToListAsync();
+
+                            var payload = JsonSerializer.Serialize(new
+                            {
+                                Data = activity,
+                                Status = activity.Status.ToString(),
+                                Hosts = dbActivity.Hosts.Select(host => new { host.FirstName, host.Email })
+                            }, options);
+
+                            var content = new StringContent(payload, Encoding.UTF8, "application/json");
+                            await _httpClient.PostAsync(url, content);
+                        }
+
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
