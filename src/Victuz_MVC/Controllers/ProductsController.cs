@@ -27,8 +27,14 @@ namespace Victuz_MVC.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Products.ToListAsync());
+
+            var products = await _context.Products
+                .Include(p => p.Picture)
+                .ToListAsync();
+
+            return View(products);
         }
+
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -39,7 +45,9 @@ namespace Victuz_MVC.Controllers
             }
 
             var product = await _context.Products
+                .Include(p => p.Picture)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (product == null)
             {
                 return NotFound();
@@ -96,6 +104,10 @@ namespace Victuz_MVC.Controllers
             {
                 return NotFound();
             }
+
+            var products = await _context.Products
+                .Include(p => p.Picture)
+                .ToListAsync();
             return View(product);
         }
 
@@ -104,7 +116,7 @@ namespace Victuz_MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] Product product, IFormFile? file)
         {
             if (id != product.Id)
             {
@@ -115,6 +127,29 @@ namespace Victuz_MVC.Controllers
             {
                 try
                 {
+                    Picture? removedPicture = null;
+                    // Fetch the existing entry so we can override the picture
+                    var existingEntry = _context.Activity.AsNoTracking().Include(a => a.Picture).First(p => p.Id == product.Id);
+                    if (file != null)
+                    {
+                        // Delete existing file from filesystem
+                        if (existingEntry.Picture is not null)
+                        {
+                            _pictureService.DeletePicture(existingEntry.Picture.FilePath);
+                            removedPicture = existingEntry.Picture;
+                        }
+
+                        var picture = await _pictureService.CreatePicture(file);
+                        product.Picture = picture;
+                    }
+                    else
+                    {
+                        if (existingEntry.Picture is not null)
+                        {
+                            product.Picture = existingEntry.Picture;
+                        }
+                    }
+
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
