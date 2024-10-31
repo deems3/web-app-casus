@@ -66,12 +66,18 @@
                         </li>
 
                         <li class="nav-item">
-                            @if (User.IsInRole("Member"))
+                            @if (User.IsInRole("Admin"))
                             {
-                                <a class="nav-link whitetex" asp-area="" asp-controller="Enrollments" asp-action="Index">Ingeschreven Activiteiten</a>
+                                <a class="nav-link whitetext" asp-area="" asp-controller="Orders" asp-action="Index">Orderweergave</a>
                             }
                         </li>
 
+                        <li class="nav-item">
+                            @if (User.IsInRole("Member"))
+                            {
+                                <a class="nav-link whitetext" asp-area="" asp-controller="Enrollments" asp-action="Index">Ingeschreven Activiteiten</a>
+                            }
+                        </li>
 
                     </ul>
                     <partial name="_LoginPartial" />
