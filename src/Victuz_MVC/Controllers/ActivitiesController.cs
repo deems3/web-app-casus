@@ -171,7 +171,7 @@ namespace Victuz_MVC.Controllers
                 return Unauthorized();
             }
 
-            if (ModelState.IsValid && activityViewModel.Hosts?.Count == 2)
+            if (ModelState.IsValid && activityViewModel.HostIds?.Count == 2)
             {
                 var activity = new Activity
                 {
