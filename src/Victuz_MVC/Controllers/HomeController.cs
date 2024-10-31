@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
@@ -19,6 +20,7 @@ namespace Victuz_MVC.Controllers
         public ActionResult Index()
         {
             var upcomingActivity = _context.Activity
+                .Include(a => a.Picture)
                 .Where(a => a.DateTime > DateTime.Now)
                 .OrderBy(a => a.DateTime)
                 .FirstOrDefault();

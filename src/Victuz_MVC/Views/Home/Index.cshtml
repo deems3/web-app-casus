@@ -23,13 +23,22 @@ else
 }
 
 <h3>Eerstvolgende Activiteit</h3>
-
 @if (Model != null)
 {
     <p>Naam: @Model.Name</p>
     <p>Beschrijving: @Model.Description</p>
     <p>Datum en tijd: @Model.DateTime.ToString("dd-MM-yyyy HH:mm")</p>
     <p>Locatie: @Model.Location</p>
+    <p>
+        @if (Model.Picture != null)
+        {
+            <img src="@Model.Picture.FilePath" width="100" />
+        }
+        else
+        {
+            <span>No Image Available</span>
+        }
+    </p>
 }
 else
 {
