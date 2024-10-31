@@ -333,10 +333,15 @@ namespace Victuz_MVC.Controllers
                     activity.Hosts.AddRange(existingEntry.Hosts);
 
 
-                    if (existingEntry != null)
+                    var dbActivity = await _context.Activity
+                        .Include(a => a.Hosts)
+                        .FirstOrDefaultAsync(a => a.Id == activity.Id);
+
+
+                    if (dbActivity != null)
                     {
 
-                        if (activity.Status != existingEntry.Status)
+                        if (activity.Status != dbActivity.Status)
                         {
                             var url = "https://eo6rv3rphu7vb23.m.pipedream.net";
 
@@ -356,14 +361,13 @@ namespace Victuz_MVC.Controllers
                             {
                                 Data = activity,
                                 Status = activity.Status.ToString(),
-                                Hosts = existingEntry.Hosts.Select(host => new { host.FirstName, host.Email })
+                                Hosts = dbActivity.Hosts.Select(host => new { host.FirstName, host.Email })
                             }, options);
 
                             var content = new StringContent(payload, Encoding.UTF8, "application/json");
                             await _httpClient.PostAsync(url, content);
                         }
 
-                        _context.Activity.Update(activity);
                         await _context.SaveChangesAsync();
                     }
                     else
