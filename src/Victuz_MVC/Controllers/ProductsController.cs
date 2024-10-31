@@ -118,58 +118,58 @@ namespace Victuz_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] Product product, IFormFile? file)
 {
-    if (id != product.Id)
-    {
-        return NotFound();
-    }
-
-    if (ModelState.IsValid)
-    {
-        try
+        if (id != product.Id)
         {
-            Picture? removedPicture = null;
+            return NotFound();
+        }
 
-            // Fetch the existing entry so we can override the picture
-            var existingEntry = _context.Activity.AsNoTracking().Include(a => a.Picture).FirstOrDefault(p => p.Id == product.Id);
-            if (existingEntry == null)
+        if (ModelState.IsValid)
+        {
+            try
             {
-                return NotFound(); // Return NotFound if the product does not exist
-            }
+                Picture? removedPicture = null;
 
-            if (file != null)
-            {
-                // Delete existing file from filesystem
-                if (existingEntry.Picture is not null)
+                // Fetch the existing entry so we can override the picture
+                var existingEntry = _context.Products.AsNoTracking().Include(a => a.Picture).FirstOrDefault(p => p.Id == product.Id);
+                if (existingEntry == null)
                 {
-                    _pictureService.DeletePicture(existingEntry.Picture.FilePath);
-                    removedPicture = existingEntry.Picture;
+                    return NotFound(); // Return NotFound if the product does not exist
                 }
 
-                var picture = await _pictureService.CreatePicture(file);
-                product.Picture = picture;
-            }
-            else
-            {
-                if (existingEntry.Picture is not null)
+                if (file != null)
                 {
-                    product.Picture = existingEntry.Picture;
+                    // Delete existing file from filesystem
+                    if (existingEntry.Picture is not null)
+                    {
+                        _pictureService.DeletePicture(existingEntry.Picture.FilePath);
+                        removedPicture = existingEntry.Picture;
+                    }
+
+                    var picture = await _pictureService.CreatePicture(file);
+                    product.Picture = picture;
+                }
+                else
+                {
+                    if (existingEntry.Picture is not null)
+                    {
+                        product.Picture = existingEntry.Picture;
+                    }
+                }
+
+                _context.Update(product);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(product.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
                 }
             }
-
-            _context.Update(product);
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!ProductExists(product.Id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
         return RedirectToAction(nameof(Index));
     }
     return View(product);
