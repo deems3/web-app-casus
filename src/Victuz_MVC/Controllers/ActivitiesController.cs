@@ -78,17 +78,6 @@ namespace Victuz_MVC.Controllers
             return View(activities);
         }
 
-        // View voor de eerstvolgende activiteit (oorpagina)
-        public ActionResult UpcomingActivity()
-        {
-            var upcomingActivity = _context.Activity
-                .Where(a => a.DateTime > DateTime.Now)
-                .OrderBy(a => a.DateTime)
-                .FirstOrDefault();
-
-            return View(upcomingActivity);
-        }
-
         // GET: Activities/Details/5
         public async Task<IActionResult> Details(int? id)
         {
