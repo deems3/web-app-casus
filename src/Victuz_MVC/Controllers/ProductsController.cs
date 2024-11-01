@@ -58,11 +58,13 @@ namespace Victuz_MVC.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        // GET: Products/Create
+        //GET: Products/Create
         public IActionResult Create()
         {
+            ViewBag.Categories = _context.ProductCategory.ToList();
             return View();
         }
+
 
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -70,7 +72,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Price")] CreateProductViewModel productViewModel, IFormFile? file)
+        public async Task<IActionResult> Create([Bind("Name,Description,Price,SelectedCategoryIds")] CreateProductViewModel productViewModel, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +80,7 @@ namespace Victuz_MVC.Controllers
                 {
                     Name = productViewModel.Name,
                     Description = productViewModel.Description,
-                    Price = productViewModel.Price,
+                    Price = productViewModel.Price
                 };
 
                 if (file != null)
@@ -87,12 +89,25 @@ namespace Victuz_MVC.Controllers
                     product.Picture = picture;
                 }
 
+                // Add selected categories to the product
+                foreach (var categoryId in productViewModel.SelectedCategoryIds)
+                {
+                    var categoryLine = new ProductCategoryLine
+                    {
+                        Product = product,
+                        ProductCategoryId = categoryId
+                    };
+                    product.ProductCategoryLines.Add(categoryLine);
+                }
+
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(productViewModel);
         }
+
 
         [Authorize(Roles = "Admin")]
         // GET: Products/Edit/5
