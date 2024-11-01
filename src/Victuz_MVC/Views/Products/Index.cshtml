@@ -27,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
+            <th>
+                Categories
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -54,8 +57,26 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
+                <td>
+                    @if (item.ProductCategoryLines != null && item.ProductCategoryLines.Any())
+                    {
+                        foreach (var categoryLine in item.ProductCategoryLines)
+                        {
+                            @(categoryLine.ProductCategory?.Name ?? "Unknown Category")
+                            <br />
+                        }
+                    }
+                    else
+                    {
+                        @("Geen categorieën gevonden")
+                    }
+
+
+                </td>
 
             <td>
+
+
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>

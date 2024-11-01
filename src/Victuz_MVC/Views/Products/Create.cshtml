@@ -1,4 +1,4 @@
-﻿@model Victuz_MVC.Models.Product
+﻿@model CreateProductViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -11,7 +11,6 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -28,18 +27,15 @@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="SelectedCategoryIds" class="control-label">Categories</label>
+                <select asp-for="SelectedCategoryIds" asp-items="@(new MultiSelectList(ViewBag.Categories, "Id", "Name"))" class="form-control" multiple="multiple"></select>
+                <span asp-validation-for="SelectedCategoryIds" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for=" ProductCategoryLines" class="control-label">Categories</label>
-                <select asp-for=" ProductCategoryLines" asp-items="@(new MultiSelectList(ViewBag.Categories, "Id", "Name"))" class="form-control" multiple="multiple"></select>
-                <span asp-validation-for=" ProductCategoryLines" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label class="control-label">Afbeelding</label>
-                <input name="file" type="file" class="form-control" />
+                <label asp-for="file" class="control-label">Picture</label>
+                <input type="file" asp-for="file" class="form-control" />
+                <span asp-validation-for="file" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -53,5 +49,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -31,6 +31,8 @@ namespace Victuz_MVC.Controllers
 
             var products = await _context.Products
                 .Include(p => p.Picture)
+                .Include(c => c.ProductCategoryLines)
+                    .ThenInclude(c => c.ProductCategory)
                 .ToListAsync();
 
             return View(products);
@@ -47,6 +49,8 @@ namespace Victuz_MVC.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Picture)
+                .Include(p => p.ProductCategoryLines) // Voeg dit toe om categorieën te laden
+                    .ThenInclude(c => c.ProductCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)
@@ -57,13 +61,16 @@ namespace Victuz_MVC.Controllers
             return View(product);
         }
 
+
         [Authorize(Roles = "Admin")]
         //GET: Products/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            ViewBag.Categories = _context.ProductCategory.ToList();
+            ViewBag.Categories = new SelectList(_context.ProductCategory, "Id", "Name");
             return View();
         }
+
 
 
         // POST: Products/Create
@@ -80,7 +87,8 @@ namespace Victuz_MVC.Controllers
                 {
                     Name = productViewModel.Name,
                     Description = productViewModel.Description,
-                    Price = productViewModel.Price
+                    Price = productViewModel.Price,
+                    ProductCategoryLines = new List<ProductCategoryLine>()
                 };
 
                 if (file != null)
@@ -105,8 +113,12 @@ namespace Victuz_MVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            ViewBag.Categories = new SelectList(_context.ProductCategory, "Id", "Name");
             return View(productViewModel);
         }
+
+
+
 
 
         [Authorize(Roles = "Admin")]
@@ -137,7 +149,7 @@ namespace Victuz_MVC.Controllers
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] Product product, IFormFile? file)
-{
+        {
         if (id != product.Id)
         {
             return NotFound();
