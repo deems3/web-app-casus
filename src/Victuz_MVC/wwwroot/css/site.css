@@ -51,3 +51,8 @@ body {
 .fa-envelope {
     color: #2AA1AA !important;
 }
+
+.card {
+    background-color: black;
+    color: white;
+}
