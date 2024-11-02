@@ -54,6 +54,8 @@ namespace Victuz_MVC.Controllers
             // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
             ViewBag.UserId = user?.Id ?? null;
 
+            ViewBag.IsBlacklisted = user?.Blacklisted ?? false;
+
             return View(activities);
         }
 
