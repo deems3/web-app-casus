@@ -54,6 +54,8 @@ namespace Victuz_MVC.Controllers
             // user?.Id ?? null means: if the user.Id is not null, use its value otherwise set to null
             ViewBag.UserId = user?.Id ?? null;
 
+            ViewBag.IsBlacklisted = user?.Blacklisted ?? false;
+
             return View(activities);
         }
 
@@ -81,12 +83,23 @@ namespace Victuz_MVC.Controllers
         // GET: Activities/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user is null)
+            {
+                return Unauthorized();
+            }
+
+            if (user.Blacklisted)
+            {
+                return (View("Index"));
+            }
+
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var user = await _userManager.GetUserAsync(HttpContext.User);
 
             var isMember = user is not null ? await _userManager.IsInRoleAsync(user, "Member") : true;
             // Get all activities with corresponding hosts
@@ -111,8 +124,19 @@ namespace Victuz_MVC.Controllers
 
         [Authorize(Roles = "Admin")]
         // GET: Activities/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user is null)
+            {
+                return Unauthorized();
+            }
+
+            if (user.Blacklisted)
+            {
+                return (View("Index"));
+            }
+
             ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
             return View();
         }
@@ -153,8 +177,19 @@ namespace Victuz_MVC.Controllers
 
         // SUGGEST ACTIVITY FOR MEMBERS ONLY !! 
         [Authorize]
-        public IActionResult Suggest()
+        public async Task<IActionResult> Suggest()
         {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (user is null)
+            {
+                return Unauthorized();
+            }
+
+            if (user.Blacklisted)
+            {
+                return (View("Index"));
+            }
+
             ViewData["ActivityCategoryId"] = new SelectList(_context.ActivityCategory, "Id", "Name");
             ViewData["Hosts"] = new MultiSelectList(_context.Accounts, "Id", "FirstName");
             return View();

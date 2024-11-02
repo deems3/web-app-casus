@@ -14,5 +14,7 @@ namespace Victuz_MVC.Models
         public ICollection<Enrollment> Enrollments { get; } = [];
 
         public ICollection<Order> Orders { get; } = [];
+
+        public bool Blacklisted { get; set; }
     }
 }

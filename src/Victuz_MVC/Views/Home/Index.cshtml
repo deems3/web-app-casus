@@ -28,7 +28,12 @@ else
     <p>Naam: @Model.Name</p>
     <p>Beschrijving: @Model.Description</p>
     <p>Datum en tijd: @Model.DateTime.ToString("dd-MM-yyyy HH:mm")</p>
-    <p>Locatie: @Model.Location</p>
+
+    @if (!ViewBag.IsBlacklisted)
+    {
+        <p>Locatie: @Model.Location</p>
+    }
+
     <p>
         @if (Model.Picture != null)
         {
