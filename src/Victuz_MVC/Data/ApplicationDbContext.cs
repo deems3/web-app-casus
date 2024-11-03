@@ -12,7 +12,7 @@ namespace Victuz_MVC.Data
         public DbSet<ActivityCategory> ActivityCategory { get; set; } = default!;
         public DbSet<Product> Products { get; set; } = default!;
         public DbSet<ProductCategory> ProductCategory { get; set; } = default!;
-        //public DbSet<ProductCategoryLine> ProductCategoryLine { get; set; } = default!;
+        public DbSet<ProductCategoryLine> ProductCategoryLine { get; set; } = default!;
         public DbSet<Picture> Picture { get; set; } = default!;
         public DbSet<Enrollment> Enrollments { get; set; } = default!;
 

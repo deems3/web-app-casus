@@ -160,9 +160,8 @@ namespace Victuz_MVC.Controllers
                     var existingEntry = await _context.Products
                         .AsNoTracking()
                         .Include(p => p.Picture)
-                        .Include(p => p.ProductCategoryLines)
-                        .ThenInclude(pcl => pcl.ProductCategory)
                         .FirstOrDefaultAsync(p => p.Id == product.Id);
+
                     if (existingEntry == null)
                     {
                         return NotFound(); // Return NotFound if the product does not exist
@@ -188,33 +187,36 @@ namespace Victuz_MVC.Controllers
                         }
                     }
 
-                    // TODO/FIXME: as of now, for some reason all existing categories are not removed from the product/database.
-                    var removedCategories = existingEntry.ProductCategoryLines
+                    var existingCategoryLines = await _context.ProductCategoryLine
+                        .Where(pcl => pcl.ProductId == product.Id)
+                        .Include(pcl => pcl.ProductCategory)
+                        .ToListAsync();
+                    var removedCategories = existingCategoryLines
                             .Where(p => !selectedCategoryIds.Contains(p.ProductCategory!.Id))
                             .ToList();
-                    var existingCategories = existingEntry.ProductCategoryLines
+                    var existingCategories = existingCategoryLines
                             .Where(p => selectedCategoryIds.Contains(p.ProductCategory!.Id))
                             .ToList();
-                    product.ProductCategoryLines = existingCategories;
 
                     foreach (var cat in removedCategories)
                     {
-                        product.ProductCategoryLines.Remove(cat);
+                        _context.ProductCategoryLine.Remove(cat);
                     }
-
-                    await _context.SaveChangesAsync();
 
                     List<ProductCategoryLine> categoryLinesToAdd = [];
 
                     foreach (var category in existingCategories)
                     {
-                        if (!selectedCategoryIds.Contains(category.Id)) continue;
-                        selectedCategoryIds.Remove(category.Id);
+                        if (!selectedCategoryIds.Contains(category.ProductCategory!.Id))
+                        {
+                            continue;
+                        }
+                        selectedCategoryIds.Remove(category.ProductCategory.Id);
                     }
 
-                    foreach(var idToCreate in selectedCategoryIds)
+                    foreach (var idToCreate in selectedCategoryIds)
                     {
-                        product.ProductCategoryLines.Add(
+                        _context.ProductCategoryLine.Add(
                             new ProductCategoryLine
                             {
                                 Product = product,
