@@ -17,36 +17,42 @@
 {
     <h1> Welkom admin</h1>
 }
-else
+@if (User.IsInRole("Member"))
 {
     <h1> Welkom lid</h1>
 }
 
+
 <h3>Eerstvolgende Activiteit</h3>
 @if (Model != null)
 {
-    <p>Naam: @Model.Name</p>
-    <p>Beschrijving: @Model.Description</p>
-    <p>Datum en tijd: @Model.DateTime.ToString("dd-MM-yyyy HH:mm")</p>
+    <div class="ActivityCard">
+        <div class="ActivityCard-overlay">
+            <h2 class="ActivityCard-title">Naam: @Model.Name</h2>
+            <p class="ActivityCard-description">Beschrijving: @Model.Description</p>
+            <p class ="ActivityCard-description">Datum en tijd: @Model.DateTime.ToString("dd-MM-yyyy HH:mm")</p>
 
-    @if (!ViewBag.IsBlacklisted)
-    {
-        <p>Locatie: @Model.Location</p>
-    }
+            @if (!ViewBag.IsBlacklisted)
+            {
+                <p class ="ActivityCard-description">Locatie: @Model.Location</p>
+            }
 
-    <p>
-        @if (Model.Picture != null)
-        {
-            <img src="@Model.Picture.FilePath" width="100" />
-        }
-        else
-        {
-            <span>No Image Available</span>
-        }
-    </p>
+            <p class="ActivityCard-Img">
+                @if (Model.Picture != null)
+                {
+                    <img src="@Model.Picture.FilePath"/>
+                }
+                else
+                {
+                    <span>No Image Available</span>
+                }
+            </p>
+        </div>
+    </div>
 }
 else
 {
     <p>Er zijn momenteel geen geplande activiteiten.</p>
 }
+
 
