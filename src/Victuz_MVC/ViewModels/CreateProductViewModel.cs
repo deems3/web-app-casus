@@ -10,5 +10,6 @@ namespace Victuz_MVC.ViewModels
         public int? PictureId { get; set; }
         public Picture? Picture {  get; set; }
 
+        public List<int> SelectedCategoryIds { get; set; } = new List<int>();
     }
 }
