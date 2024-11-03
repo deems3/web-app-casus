@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
 using Victuz_MVC.Services;
@@ -31,6 +33,8 @@ namespace Victuz_MVC.Controllers
 
             var products = await _context.Products
                 .Include(p => p.Picture)
+                .Include(p => p.ProductCategoryLines)
+                .ThenInclude(pcl => pcl.ProductCategory)
                 .ToListAsync();
 
             return View(products);
@@ -47,6 +51,8 @@ namespace Victuz_MVC.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Picture)
+                .Include(p => p.ProductCategoryLines)
+                .ThenInclude(pcl => pcl.ProductCategory)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)
@@ -57,10 +63,11 @@ namespace Victuz_MVC.Controllers
             return View(product);
         }
 
-        [Authorize(Roles = "Admin")]
         // GET: Products/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
+            ViewBag.Categories = new MultiSelectList(_context.ProductCategory, "Id", "Name");
             return View();
         }
 
@@ -70,7 +77,7 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Description,Price")] CreateProductViewModel productViewModel, IFormFile? file)
+        public async Task<IActionResult> Create([Bind("Name,Description,Price,SelectedCategoryIds")] CreateProductViewModel productViewModel, IFormFile? file)
         {
             if (ModelState.IsValid)
             {
@@ -79,12 +86,23 @@ namespace Victuz_MVC.Controllers
                     Name = productViewModel.Name,
                     Description = productViewModel.Description,
                     Price = productViewModel.Price,
+                    ProductCategoryLines = []
                 };
 
                 if (file != null)
                 {
                     var picture = await _pictureService.CreatePicture(file);
                     product.Picture = picture;
+                }
+
+                foreach (var categoryId in productViewModel.SelectedCategoryIds)
+                {
+                    var categoryLine = new ProductCategoryLine
+                    {
+                        Product = product,
+                        ProductCategoryId = categoryId
+                    };
+                    product.ProductCategoryLines.Add(categoryLine);
                 }
 
                 _context.Add(product);
@@ -103,15 +121,19 @@ namespace Victuz_MVC.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(p => p.ProductCategoryLines)
+                .ThenInclude(pcl => pcl.ProductCategory)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            var products = await _context.Products
-                .Include(p => p.Picture)
-                .ToListAsync();
+            var selectedProductCategories = product.ProductCategoryLines.Select(p => p.ProductCategory).ToList();
+
+            ViewBag.Categories = new MultiSelectList(_context.ProductCategory, "Id", "Name", selectedValues: selectedProductCategories.Select(spc => spc!.Id));
+
             return View(product);
         }
 
@@ -121,64 +143,104 @@ namespace Victuz_MVC.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] Product product, IFormFile? file)
-{
-        if (id != product.Id)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price")] Product product, List<int> selectedCategoryIds, IFormFile? file)
         {
-            return NotFound();
+            if (id != product.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    Picture? removedPicture = null;
+
+                    // Fetch the existing entry so we can override the picture
+                    var existingEntry = await _context.Products
+                        .AsNoTracking()
+                        .Include(p => p.Picture)
+                        .Include(p => p.ProductCategoryLines)
+                        .ThenInclude(pcl => pcl.ProductCategory)
+                        .FirstOrDefaultAsync(p => p.Id == product.Id);
+                    if (existingEntry == null)
+                    {
+                        return NotFound(); // Return NotFound if the product does not exist
+                    }
+
+                    if (file != null)
+                    {
+                        // Delete existing file from filesystem
+                        if (existingEntry.Picture is not null)
+                        {
+                            _pictureService.DeletePicture(existingEntry.Picture.FilePath);
+                            removedPicture = existingEntry.Picture;
+                        }
+
+                        var picture = await _pictureService.CreatePicture(file);
+                        product.Picture = picture;
+                    }
+                    else
+                    {
+                        if (existingEntry.Picture is not null)
+                        {
+                            product.Picture = existingEntry.Picture;
+                        }
+                    }
+
+                    // TODO/FIXME: as of now, for some reason all existing categories are not removed from the product/database.
+                    var removedCategories = existingEntry.ProductCategoryLines
+                            .Where(p => !selectedCategoryIds.Contains(p.ProductCategory!.Id))
+                            .ToList();
+                    var existingCategories = existingEntry.ProductCategoryLines
+                            .Where(p => selectedCategoryIds.Contains(p.ProductCategory!.Id))
+                            .ToList();
+                    product.ProductCategoryLines = existingCategories;
+
+                    foreach (var cat in removedCategories)
+                    {
+                        product.ProductCategoryLines.Remove(cat);
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    List<ProductCategoryLine> categoryLinesToAdd = [];
+
+                    foreach (var category in existingCategories)
+                    {
+                        if (!selectedCategoryIds.Contains(category.Id)) continue;
+                        selectedCategoryIds.Remove(category.Id);
+                    }
+
+                    foreach(var idToCreate in selectedCategoryIds)
+                    {
+                        product.ProductCategoryLines.Add(
+                            new ProductCategoryLine
+                            {
+                                Product = product,
+                                ProductCategoryId = idToCreate,
+                            }
+                        );
+                    }
+
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProductExists(product.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(product);
         }
-
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                Picture? removedPicture = null;
-
-                // Fetch the existing entry so we can override the picture
-                var existingEntry = _context.Products.AsNoTracking().Include(a => a.Picture).FirstOrDefault(p => p.Id == product.Id);
-                if (existingEntry == null)
-                {
-                    return NotFound(); // Return NotFound if the product does not exist
-                }
-
-                if (file != null)
-                {
-                    // Delete existing file from filesystem
-                    if (existingEntry.Picture is not null)
-                    {
-                        _pictureService.DeletePicture(existingEntry.Picture.FilePath);
-                        removedPicture = existingEntry.Picture;
-                    }
-
-                    var picture = await _pictureService.CreatePicture(file);
-                    product.Picture = picture;
-                }
-                else
-                {
-                    if (existingEntry.Picture is not null)
-                    {
-                        product.Picture = existingEntry.Picture;
-                    }
-                }
-
-                _context.Update(product);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(product.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-        return RedirectToAction(nameof(Index));
-    }
-    return View(product);
-}
         [Authorize(Roles = "Admin")]
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
