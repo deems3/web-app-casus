@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -10,21 +11,39 @@ namespace Victuz_MVC.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Account> _userManager;
 
-        public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context, ILogger<HomeController> logger, UserManager<Account> userManager)
         {
             _context = context;
             _logger = logger;
+            _userManager = userManager;
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             var upcomingActivity = _context.Activity
                 .Include(a => a.Picture)
                 .Where(a => a.DateTime > DateTime.Now)
                 .OrderBy(a => a.DateTime)
-                .FirstOrDefault();
+            .FirstOrDefault();
 
+            var user = HttpContext.User;
+
+            if (user.Identity is null || !user.Identity.IsAuthenticated)
+            {
+                ViewBag.IsBlacklisted = true;
+            } 
+            else
+            {
+                var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                if (loggedInUser == null)
+                {
+                    ViewBag.IsBlacklisted = true;
+                    return View(upcomingActivity);
+                }
+                ViewBag.IsBlacklisted = loggedInUser.Blacklisted;
+            }
             return View(upcomingActivity);
         }
 
