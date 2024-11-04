@@ -33,6 +33,7 @@ namespace Victuz_MVC
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddScoped<PictureService>();
+            builder.Services.AddScoped<OrderService>();
 
             builder.Services.AddHttpClient();
 

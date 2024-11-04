@@ -371,3 +371,4 @@ obj/
 bin/
 **/uploads/*
 !**/uploads/.gitkeep
+/src/Victuz_MVC/Data/ApplicationDbContext.cs

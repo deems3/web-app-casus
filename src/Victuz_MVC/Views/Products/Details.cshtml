@@ -29,6 +29,14 @@
             @Html.DisplayFor(model => model.Price)
         </dd>
     </dl>
+    <dl class="row">
+        <form asp-controller="Orders" asp-action="AddItemToCart" method="post">
+            <dt class="col-sm-2">
+                <input type="hidden" name="ProductId" value="@Model.Id"/>
+                <button type="submit">Voeg toe aan winkelmandje</button>
+            </dt>
+        </form>
+    </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

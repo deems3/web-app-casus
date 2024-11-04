@@ -15,6 +15,7 @@ namespace Victuz_MVC.Data
         public DbSet<ProductCategoryLine> ProductCategoryLine { get; set; } = default!;
         public DbSet<Picture> Picture { get; set; } = default!;
         public DbSet<Enrollment> Enrollments { get; set; } = default!;
+        public DbSet<Order> Order { get; set; } = default!;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
         {
@@ -124,17 +125,6 @@ namespace Victuz_MVC.Data
 
             builder.Entity<OrderProduct>().HasData(orderProduct1);
 
-            //Orders
-            Order order1 = new Order
-            {
-                Id = 1,
-                TotalPrice = 60.00M,
-                AccountId = 1,
-            };
-
-            builder.Entity<Order>().HasData(order1);
-
-
             // Categories
             var cat1 = new ActivityCategory
             {
@@ -200,6 +190,5 @@ namespace Victuz_MVC.Data
             builder.Entity<Activity>().HasData(act2);
             builder.Entity<Activity>().HasData(act3);
         }
-        public DbSet<Victuz_MVC.Models.Order> Order { get; set; } = default!;
     }
 }
