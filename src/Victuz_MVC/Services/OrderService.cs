@@ -61,28 +61,28 @@ namespace Victuz_MVC.Services
             context.Order.Update(order);
             await context.SaveChangesAsync();
         }
-
-        public async Task RemoveOrderLine(Order order, Product product, int amount = 1)
+        public async Task SetProductQuantity(Order order, int productId, int amount)
         {
-            // Check if product exists for order
-            var existingProduct = order.OrderProducts.FirstOrDefault(p => p.Product.Id == product.Id);
-
-            // Product already deleted (edge case/race condition)
-            if (existingProduct is null)
+            var existingProduct = order.OrderProducts.First(p => p.Product.Id == productId);
+            if (amount > 0)
             {
-                return;
+                existingProduct.ProductAmount = amount;
             }
             else
             {
-                // Product does not exit, decrease the amount
-                existingProduct.ProductAmount -= amount;
-
-                // If amount gets to or below 0, remove the item from the order
-                if (existingProduct.ProductAmount <= 0)
-                {
-                    order.OrderProducts.Remove(existingProduct);
-                }
+                order.OrderProducts.Remove(existingProduct);
             }
+
+            context.Order.Update(order);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task RemoveOrderLine(Order order, int productId)
+        {
+            // Check if product exists for order
+            var existingProduct = order.OrderProducts.First(p => p.Product.Id == productId);
+
+            order.OrderProducts.Remove(existingProduct);
 
             context.Order.Update(order);
             await context.SaveChangesAsync();

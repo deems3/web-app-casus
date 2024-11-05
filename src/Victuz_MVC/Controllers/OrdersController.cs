@@ -70,6 +70,57 @@ namespace Victuz_MVC.Controllers
             return RedirectToAction(nameof(Cart));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> SetProductQuantity([Bind("ProductId,Quantity")] AddCartItemViewModel addCartItem)
+        {
+            var account = await userManager.GetUserAsync(HttpContext.User);
+
+            if (account is null)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var order = await orderService.FindOrCreateOrder(account.Id);
+                await orderService.SetProductQuantity(order, addCartItem.ProductId, addCartItem.Quantity);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Er is iets mis gegaan met het toevoegen van item aan een order");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return RedirectToAction(nameof(Cart));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> RemoveOrderLine([Bind("ProductId")] AddCartItemViewModel addCartItem)
+        {
+            var account = await userManager.GetUserAsync(HttpContext.User);
+
+            if (account is null)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var order = await orderService.FindOrCreateOrder(account.Id);
+                await orderService.RemoveOrderLine(order, addCartItem.ProductId);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Er is iets mis gegaan met het toevoegen van item aan een order");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return RedirectToAction(nameof(Cart));
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

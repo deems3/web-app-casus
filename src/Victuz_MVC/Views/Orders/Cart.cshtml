@@ -9,29 +9,52 @@
 <div>
     <h4>Order</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            Items
-        </dt>
-        <dd class = "col-sm-10">
-            <ul>
-            @foreach(var item in Model.OrderProducts)
-            {
-                <li>@item.Product.Name: @item.ProductAmount (per stuk @item.Product.Price)</li>
-            }
-            </ul>
-        </dd>
-    </dl>
-</div>
-<div>
-    <form asp-action="ConfirmOrder">
-        <input type="hidden" name="OrderId" value="@Model.Id" />
-        <button type="submit">Bestel</button>
-    </form>
+    @if (Model.OrderProducts.Count > 0)
+    {
+        <dl class="row">
+            <dt class="col-sm-2">
+                Items
+            </dt>
+            <dd class="col-sm-10">
+                <ul class="p-0">
+                    @foreach (var item in Model.OrderProducts)
+                    {
+                        <li class="d-flex align-items-center gap-2 mb-3">
+                            <span>@item.Product.Name: $@(item.Product.Price * item.ProductAmount) (@item.Product.Price/st)</span>
+                            <form asp-controller="Orders" asp-action="SetProductQuantity" method="post" class="d-flex align-items-center gap-2">
+                                <input type="hidden" name="ProductId" value="@item.Product.Id" />
+                                <input type="number" id="quantityPicker" name="Quantity" min="0" value="@item.ProductAmount" style="max-width: 69px;" class="text-center"/>
+                                <button type="submit" class="btn btn-primary">Update quantity</button>
+                            </form>
+                            <form asp-controller="Orders" asp-action="RemoveOrderLine" method="post">
+                                <input type="hidden" name="ProductId" value="@item.Product.Id" />
+                                <button type="submit" class="btn btn-danger">Verwijder</button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.TotalPrice)
+            </dt>
+            <dd class="col-sm-10">
+                $@Html.DisplayFor(model => model.TotalPrice)
+            </dd>
+        </dl>
+        <div>
+            <form asp-action="ConfirmOrder">
+                <input type="hidden" name="OrderId" value="@Model.Id" />
+                <button type="submit" class="btn btn-primary">Bestel</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="container">
+                <p>Je hebt nog geen producten in je winkelmandje</p>
+                <a asp-controller="Products" asp-action="Index">Naar producten</a>
+            </div>
+        </div>
+    }
 </div>
