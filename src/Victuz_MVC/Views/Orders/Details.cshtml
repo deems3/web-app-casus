@@ -1,0 +1,62 @@
+﻿@model Victuz_MVC.Models.Order
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Order</h4>
+    <hr />
+    @if (Model.OrderProducts.Count > 0)
+    {
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Account.FirstName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Account.FirstName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Account.LastName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Account.LastName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Account.Email)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Account.Email)
+            </dd>
+            <dt class="col-sm-2">
+                Items
+            </dt>
+            <dd class="col-sm-10">
+                <ul class="p-0">
+                    @foreach (var item in Model.OrderProducts)
+                    {
+                        <li class="d-flex align-items-center gap-2 mb-3">
+                            <span>@item.Product.Name: $@(item.Product.Price * item.ProductAmount) (@item.Product.Price/st)</span>
+                        </li>
+                    }
+                </ul>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.TotalPrice)
+            </dt>
+            <dd class="col-sm-10">
+                $@Html.DisplayFor(model => model.TotalPrice)
+            </dd>
+        </dl>
+    }
+    else
+    {
+        <div class="row">
+            <div class="container">
+                <p>Deze order bevat geen producten</p>
+            </div>
+        </div>
+    }
+</div>

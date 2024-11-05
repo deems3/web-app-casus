@@ -20,7 +20,7 @@ namespace Victuz_MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            return View(await context.Order.Include(o => o.OrderProducts).ThenInclude(op => op.Product).ToListAsync());
+            return View(await context.Order.Include(o => o.OrderProducts).ThenInclude(op => op.Product).Where(o => o.OrderProducts.Count > 0).ToListAsync());
         }
 
         // GET: Orders/Cart
@@ -43,6 +43,53 @@ namespace Victuz_MVC.Controllers
 
             return View(order);
         }
+
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> Details(int id)
+        {
+            var order = await context.Order.Include(o => o.Account).Include(o => o.OrderProducts).ThenInclude(op => op.Product).FirstOrDefaultAsync();
+
+            if (order is null)
+            {
+                return NotFound();
+            }
+
+            return View(order);
+        }
+
+        // GET: Orders/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var order = await context.Order
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return View(order);
+        }
+
+        // POST: Orders/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var order = await context.Order.FindAsync(id);
+            if (order != null)
+            {
+                context.Order.Remove(order);
+            }
+
+            await context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -131,7 +178,7 @@ namespace Victuz_MVC.Controllers
             {
                 await orderService.ConfirmOrder(orderId);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.LogError(e, "Er is iets mis gegaan met het bevestigen van een order");
                 return StatusCode(StatusCodes.Status500InternalServerError);
