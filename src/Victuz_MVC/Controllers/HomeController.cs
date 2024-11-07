@@ -22,29 +22,31 @@ namespace Victuz_MVC.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var upcomingActivity = _context.Activity
-                .Include(a => a.Picture)
-                .Where(a => a.DateTime > DateTime.Now)
-                .OrderBy(a => a.DateTime)
-            .FirstOrDefault();
+            var upcomingActivities = _context.Activity
+        .Include(a => a.Picture)
+        .Where(a => a.DateTime > DateTime.Now)
+        .OrderBy(a => a.DateTime)
+        .Take(3) // De top 3 activiteiten pakken
+        .ToList();
 
             var user = HttpContext.User;
 
             if (user.Identity is null || !user.Identity.IsAuthenticated)
             {
                 ViewBag.IsBlacklisted = true;
-            } 
+            }
             else
             {
                 var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
                 if (loggedInUser == null)
                 {
                     ViewBag.IsBlacklisted = true;
-                    return View(upcomingActivity);
+                    return View(upcomingActivities);
                 }
                 ViewBag.IsBlacklisted = loggedInUser.Blacklisted;
             }
-            return View(upcomingActivity);
+
+            return View(upcomingActivities); 
         }
 
         public IActionResult Privacy()

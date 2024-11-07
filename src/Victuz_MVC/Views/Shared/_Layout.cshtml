@@ -39,50 +39,61 @@
                         <li class="nav-item">
                             <a class="nav-link whitetext" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-
-
-                        <li class="nav-item">
-                            <a class="nav-link whitetext" asp-area="" asp-controller="Activities" asp-action="Index">Activiteiten</a>
+                        <li class="nav-link whitetext">
+                            |
                         </li>
-
                         <li class="nav-item">
-                            <a class="nav-link whitetext" asp-area="" asp-controller="Products" asp-action="Index">WebShop</a>
+                            <a class="nav-link whitetext" asp-area="" asp-controller="Activities" asp-action="Index"> Activiteiten</a>
                         </li>
-
-                        <li class="nav-item">
-                            @if (User.IsInRole("Admin"))
+                        <li class="nav-link whitetext">
+                            |
+                        </li>
+                        <li class="nav-item whitetext">
+                            <a class="nav-link whitetext" asp-area="" asp-controller="Products" asp-action="Index">Webshop</a>
+                        </li>
+                        <li class="nav-item whitetext">
+                            @if (User.IsInRole("Member"))
                             {
-                                <a class="nav-link whitetext" asp-area="" asp-controller="Activities" asp-action="StatusActivity">Activiteit Suggesties</a>
+                            <li class="nav-link whitetext">
+                                |
+                            </li>
                             }
-                        </li>
-
-                        <li class="nav-item">
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <a class="nav-link whitetext" asp-area="" asp-controller="ActivityCategories" asp-action="Index">Activiteit categorieën</a>
-                            }
-                        </li>
-
-                        <li class="nav-item">
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <a class="nav-link whitetext" asp-area="" asp-controller="ProductCategories" asp-action="Index">Product categorieën</a>
-                            }
-                        </li>
-
-                        <li class="nav-item">
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <a class="nav-link whitetext" asp-area="" asp-controller="Orders" asp-action="Index">Orderweergave</a>
-                            }
-                        </li>
-
+                        
                         <li class="nav-item">
                             @if (User.IsInRole("Member"))
                             {
                                 <a class="nav-link whitetext" asp-area="" asp-controller="Enrollments" asp-action="Index">Ingeschreven Activiteiten</a>
                             }
                         </li>
+
+                        <li class="nav-link whitetext">
+                            |
+                        </li>
+
+                        <li class="nav-item">
+                                @if (User.IsInRole("Member"))
+                                {
+                                <a class="nav-link whitetext" asp-area="" asp-controller="Orders" asp-action="Cart">Winkelmandje</a>
+                                }
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav flex-grow-1 justify-content-end">
+                         @if (User.IsInRole("Admin"))
+                                {
+                                    <li class="nav-item whitetext dropdown">
+                                        <a class="nav-link dropdown-toggle whitetext" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Admin
+                                        </a>
+                                        <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                                            <a class="dropdown-item" asp-area="" asp-controller="Activities" asp-action="StatusActivity">Activiteit suggesties</a>
+                                            <a class="dropdown-item" asp-area="" asp-controller="ActivityCategories" asp-action="Index">Activiteit categorieën</a>
+                                            <a class="dropdown-item" asp-area="" asp-controller="ProductCategories" asp-action="Index">Product categorieën</a>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Orders" asp-action="Index">Orderweergave</a>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Accounts" asp-action="Index">Accounts</a>
+                                        </div>
+                                    </li>
+                         }
 
                     </ul>
                     <partial name="_LoginPartial" />

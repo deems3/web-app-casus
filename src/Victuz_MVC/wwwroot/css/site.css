@@ -27,9 +27,9 @@ body {
 
 .whitetext {
     color: snow !important;
-    font-size: 1.15rem;
-    font-weight: 500;
-    font-family: "Poppins"
+    font-size: 1.15rem !important;
+    font-weight: 500 !important;
+    font-family: "Poppins"!important;
 }
 
 .fa {
@@ -50,4 +50,67 @@ body {
 
 .fa-envelope {
     color: #2AA1AA !important;
+}
+.custom-nav-right {
+    margin-left: 0.5rem 1rem;
+}
+
+.ActivityCard {
+    width: 300px;
+    height: 400px;
+    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.75);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+    background-size: cover;
+    background-position: center;
+    transition: .3s ease-in-out;
+}
+
+.ActivityCard:hover {
+    transform: scale(1.01);
+    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.75);
+}
+
+.ActivityCard-overlay {
+    position: relative;
+    z-index: 2; /* Zorgt dat de overlay tekst over de afbeelding komt */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Verdeel ruimte tussen header en content */
+    background-color: rgba(0, 0, 0, .5);
+    padding: 15px;
+    height: 100%;
+}
+
+.ActivityCard-header {
+    align-self: flex-start; /* Plaatst de titel bovenaan */
+}
+
+.ActivityCard-title {
+    font-size: 1.5em;
+    margin: 0;
+    text-align: left;
+}
+
+.ActivityCard-content {
+    align-self: flex-start; /* Tekst aan de linkerkant uitlijnen */
+}
+
+.ActivityCard-description {
+    margin: 5px 0;
+    font-size: 1em;
+    text-align: left;
+}
+.ActivityCardsContainer {
+    display: flex; 
+    flex-direction: row;
+}
+
+.DeleteText {
+    color: red;
+}
+.Delete {
+    color: red;
 }

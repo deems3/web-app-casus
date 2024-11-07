@@ -1,4 +1,4 @@
-﻿@model Victuz_MVC.Models.Activity
+﻿@model IEnumerable<Victuz_MVC.Models.Activity>
 @using Microsoft.AspNetCore.Identity;
 
 @inject SignInManager<Account> SignInManager
@@ -8,45 +8,45 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-
 @if (User.IsInRole("Admin"))
 {
     <h1> Welkom admin</h1>
 }
-else
+@if (User.IsInRole("Member"))
 {
     <h1> Welkom lid</h1>
 }
 
 <h3>Eerstvolgende Activiteit</h3>
-@if (Model != null)
-{
-    <p>Naam: @Model.Name</p>
-    <p>Beschrijving: @Model.Description</p>
-    <p>Datum en tijd: @Model.DateTime.ToString("dd-MM-yyyy HH:mm")</p>
-
-    @if (!ViewBag.IsBlacklisted)
-    {
-        <p>Locatie: @Model.Location</p>
-    }
-
-    <p>
-        @if (Model.Picture != null)
+<div class="container">
+    <div class="d-flex justify-content-between">
+        @if (Model != null && Model.Any())
         {
-            <img src="@Model.Picture.FilePath" width="100" />
+            foreach (var activity in Model)
+            {
+                <a asp-controller="Activities" asp-action="Details" asp-route-id="@activity.Id" class="text-decoration-none">
+                <div class="ActivityCard" style="@(activity.Picture is not null ? $"background-image: url('{activity?.Picture?.FilePath}')" : "background-color: rgba(0, 0, 0, .5)")">
+                    <div class="ActivityCard-overlay">
+                        <div class="ActivityCard-header">
+                            <h2 class="ActivityCard-title">@activity.Name</h2>
+                        </div>
+                        <div class="ActivityCard-content">
+                            <p class="ActivityCard-des">@activity.Description</p>
+                            <p class="ActivityCard-info">Datum en tijd: @activity.DateTime.ToString("dd-MM-yyyy HH:mm")</p>
+
+                            @if (!ViewBag.IsBlacklisted)
+                            {
+                                <p class="ActivityCard-description">Locatie: @activity.Location</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                </a>
+            }
         }
         else
         {
-            <span>No Image Available</span>
+            <p>Er zijn momenteel geen geplande activiteiten.</p>
         }
-    </p>
-}
-else
-{
-    <p>Er zijn momenteel geen geplande activiteiten.</p>
-}
-
+    </div>
+</div>
