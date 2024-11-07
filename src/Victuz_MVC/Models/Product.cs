@@ -14,7 +14,7 @@ namespace Victuz_MVC.Models
 
         [Required]
         [DataType(DataType.Currency)]
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
         public int? PictureId { get; set; }
         public Picture? Picture { get; set; }
 

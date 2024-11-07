@@ -27,6 +27,9 @@
             <th>
                 Prijs
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductCategoryLines)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -54,6 +57,16 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
+
+            <td>
+                <ul>
+                @foreach(var cat in item.ProductCategoryLines)
+                {
+                    <li>@cat.ProductCategory!.Name</li>
+                }
+                </ul>
+            </td>
+
 
             <td>
                     @if (User.IsInRole("Admin"))

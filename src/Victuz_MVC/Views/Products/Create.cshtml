@@ -1,4 +1,4 @@
-﻿@model Victuz_MVC.Models.Product
+﻿@model Victuz_MVC.ViewModels.CreateProductViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -26,6 +26,11 @@
                 <label asp-for="Price" class="control-label"></label>
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedCategoryIds" class="control-label">Categories</label>
+                <select asp-for="SelectedCategoryIds" multiple="multiple" asp-items="ViewBag.Categories" class="form-control"></select>
+                <span asp-validation-for="SelectedCategoryIds" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="control-label">Afbeelding</label>
