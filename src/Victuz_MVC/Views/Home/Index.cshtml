@@ -18,46 +18,35 @@
 }
 
 <h3>Eerstvolgende Activiteit</h3>
-@if (Model != null && Model.Any())
-{
-    foreach (var activity in Model)
-    {
-        <div class="ActivityCardsContainer">
-            <div class="ActivityCard">
-                <div class="ActivityCard-Img">
-                    @if (activity.Picture != null)
-                    {
-                        <img src="@activity.Picture.FilePath" alt="Activity Image" />
-                    }
-                    else
-                    {
-                        <span>No Image Available</span>
-                    }
-                </div>
-                <div class="ActivityCard-overlay">
-                    <div class="ActivityCard-header">
-                        <h2 class="ActivityCard-title">@activity.Name</h2>
-                    </div>
-                    <div class="ActivityCard-content">
-                        <p class="ActivityCard-des">@activity.Description</p>
-                        <p class="ActivityCard-info">Datum en tijd: @activity.DateTime.ToString("dd-MM-yyyy HH:mm")</p>
+<div class="container">
+    <div class="d-flex justify-content-between">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var activity in Model)
+            {
+                <a asp-controller="Activities" asp-action="Details" asp-route-id="@activity.Id" class="text-decoration-none">
+                <div class="ActivityCard" style="@(activity.Picture is not null ? $"background-image: url('{activity?.Picture?.FilePath}')" : "background-color: rgba(0, 0, 0, .5)")">
+                    <div class="ActivityCard-overlay">
+                        <div class="ActivityCard-header">
+                            <h2 class="ActivityCard-title">@activity.Name</h2>
+                        </div>
+                        <div class="ActivityCard-content">
+                            <p class="ActivityCard-des">@activity.Description</p>
+                            <p class="ActivityCard-info">Datum en tijd: @activity.DateTime.ToString("dd-MM-yyyy HH:mm")</p>
 
-                        @if (!ViewBag.IsBlacklisted)
-                        {
-                            <p class="ActivityCard-description">Locatie: @activity.Location</p>
-                        }
+                            @if (!ViewBag.IsBlacklisted)
+                            {
+                                <p class="ActivityCard-description">Locatie: @activity.Location</p>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    }
-}
-else
-{
-    <p>Er zijn momenteel geen geplande activiteiten.</p>
-}
-
-@if (ViewBag.IsBlacklisted == true)
-{
-    <p style="color: red;">U bent geblokkeerd en kunt niet deelnemen aan activiteiten.</p>
-}
+                </a>
+            }
+        }
+        else
+        {
+            <p>Er zijn momenteel geen geplande activiteiten.</p>
+        }
+    </div>
+</div>

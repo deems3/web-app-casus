@@ -34,17 +34,14 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.DateTime)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Location)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Location)
         </dd>
         <dt class = "col-sm-2">
-            Category
+            Categorie
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.ActivityCategory.Name)
@@ -56,6 +53,10 @@
     (ViewBag.UserId is not null && !ViewBag.IsMember))
     {
         <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+    }
+    @if (!ViewBag.IsBlacklisted)
+    {
+        <a href="/Enrollments/Create/@Model?.Id">Inschrijven</a>
     }
     <a asp-action="Index">Back to List</a>
 </div>

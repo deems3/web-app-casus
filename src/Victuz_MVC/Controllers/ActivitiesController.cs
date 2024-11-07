@@ -81,9 +81,11 @@ namespace Victuz_MVC.Controllers
         }
 
         // GET: Activities/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            ViewBag.IsBlacklisted = user?.Blacklisted ?? false;
             if (user is null)
             {
                 return Unauthorized();

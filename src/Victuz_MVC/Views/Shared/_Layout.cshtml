@@ -65,6 +65,17 @@
                                 <a class="nav-link whitetext" asp-area="" asp-controller="Enrollments" asp-action="Index">Ingeschreven Activiteiten</a>
                             }
                         </li>
+
+                        <li class="nav-link whitetext">
+                            |
+                        </li>
+
+                        <li class="nav-item">
+                                @if (User.IsInRole("Member"))
+                                {
+                                <a class="nav-link whitetext" asp-area="" asp-controller="Orders" asp-action="Cart">Winkelmandje</a>
+                                }
+                        </li>
                     </ul>
 
                     <ul class="navbar-nav flex-grow-1 justify-content-end">
