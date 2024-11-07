@@ -26,26 +26,27 @@
             <th>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Naam
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Beschrijving
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Limit)
+                Limiet
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateTime)
+                Datum & Tijd
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Location)
+                Locatie
             </th>
             <th>
-                Category
+                Categorie
             </th>
+            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -96,16 +97,14 @@
 
                 @if (User.IsInRole("Admin"))
                 {
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>    
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="DeleteText">Delete</a>    
                 }
-
-
-                @if (!ViewBag.IsBlacklisted)
-                {
-                    <a href="/Enrollments/Create/@item.Id">Inschrijven</a>
-                }
-
-
+            </td>
+            <td>
+            @if (!ViewBag.IsBlacklisted)
+            {
+                <a href="/Enrollments/Create/@item.Id">Inschrijven</a>
+            }
             </td>
         </tr>
 }

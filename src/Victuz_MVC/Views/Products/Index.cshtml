@@ -19,13 +19,13 @@
             <th>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Naam
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                Beschrijving
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                Prijs
             </th>
             <th></th>
         </tr>
@@ -63,7 +63,7 @@
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="DeleteText">Delete</a>
                     }
             </td>
         </tr>
