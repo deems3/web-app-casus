@@ -1,40 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Victuz_MVC.Data;
 using Victuz_MVC.Models;
+using Microsoft.AspNetCore.Authorization;
+using Victuz_MVC.ViewModels;
+using Victuz_MVC.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace Victuz_MVC.Controllers
 {
-    public class OrdersController : Controller
+    public class OrdersController(
+        ILogger<OrdersController> logger,
+        ApplicationDbContext context,
+        UserManager<Account> userManager,
+        OrderService orderService
+    ) : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public OrdersController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         // GET: Orders
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Order.ToListAsync());
+            return View(await context.Order.Include(o => o.OrderProducts).ThenInclude(op => op.Product).Where(o => o.OrderProducts.Count > 0).ToListAsync());
         }
 
-        // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Orders/Cart
+        [Authorize]
+        public async Task<IActionResult> Cart()
         {
-            if (id == null)
+            var account = await userManager.GetUserAsync(HttpContext.User);
+
+            if (account is null)
             {
-                return NotFound();
+                return Unauthorized();
             }
 
-            var order = await _context.Order
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var order = await orderService.FindOrCreateOrder(account.Id);
+
             if (order == null)
             {
                 return NotFound();
@@ -43,76 +44,20 @@ namespace Victuz_MVC.Controllers
             return View(order);
         }
 
-        // GET: Orders/Create
-        public IActionResult Create()
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
-        }
+            var order = await context.Order
+                .Include(o => o.Account)
+                .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product)
+                .FirstOrDefaultAsync(o => o.Id == id);
 
-        // POST: Orders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TotalPrice,AccountId")] Order order)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(order);
-        }
-
-        // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
+            if (order is null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Order.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            return View(order);
-        }
-
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TotalPrice,AccountId")] Order order)
-        {
-            if (id != order.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
             return View(order);
         }
 
@@ -124,7 +69,7 @@ namespace Victuz_MVC.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order
+            var order = await context.Order
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
@@ -139,19 +84,117 @@ namespace Victuz_MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var order = await _context.Order.FindAsync(id);
+            var order = await context.Order.FindAsync(id);
             if (order != null)
             {
-                _context.Order.Remove(order);
+                context.Order.Remove(order);
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OrderExists(int id)
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> AddItemToCart([Bind("ProductId,Quantity")] AddCartItemViewModel addCartItem)
         {
-            return _context.Order.Any(e => e.Id == id);
+            var account = await userManager.GetUserAsync(HttpContext.User);
+
+            if (account is null)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var order = await orderService.FindOrCreateOrder(account.Id);
+                await orderService.AddOrderLine(order, addCartItem.ProductId, addCartItem.Quantity);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Er is iets mis gegaan met het toevoegen van item aan een order");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return RedirectToAction(nameof(Cart));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> SetProductQuantity([Bind("ProductId,Quantity")] AddCartItemViewModel addCartItem)
+        {
+            var account = await userManager.GetUserAsync(HttpContext.User);
+
+            if (account is null)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var order = await orderService.FindOrCreateOrder(account.Id);
+                await orderService.SetProductQuantity(order, addCartItem.ProductId, addCartItem.Quantity);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Er is iets mis gegaan met het toevoegen van item aan een order");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return RedirectToAction(nameof(Cart));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> RemoveOrderLine([Bind("ProductId")] AddCartItemViewModel addCartItem)
+        {
+            var account = await userManager.GetUserAsync(HttpContext.User);
+
+            if (account is null)
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                var order = await orderService.FindOrCreateOrder(account.Id);
+                await orderService.RemoveOrderLine(order, addCartItem.ProductId);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Er is iets mis gegaan met het toevoegen van item aan een order");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            return RedirectToAction(nameof(Cart));
+        }
+
+        public IActionResult Success()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ConfirmOrder([Bind("OrderId")] int orderId)
+        {
+            try
+            {
+                await orderService.ConfirmOrder(orderId);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Er is iets mis gegaan met het bevestigen van een order");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
+            // Optioneel: returnen naar een succes pagina
+            return RedirectToAction(nameof(Success));
         }
     }
 }

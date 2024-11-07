@@ -29,6 +29,25 @@
             @Html.DisplayFor(model => model.Price)
         </dd>
     </dl>
+    <dl class="row">
+        <form asp-controller="Orders" asp-action="AddItemToCart" method="post">
+            <dt class="col-sm-2">
+                <input type="hidden" name="ProductId" value="@Model.Id"/>
+                <input type="number" id="quantityPicker" name="Quantity" min="1" value="1" />
+                <button type="submit">Voeg toe aan winkelmandje</button>
+            </dt>
+        </form>
+    </dl>
+    <script>
+        var numberInput = document.getElementById("quantityPicker");
+
+        // if the value of the quantity input is 0 or below because a user pasted the value, set it to 1
+        numberInput.addEventListener("change", (e) => {
+            if (e.target.value <= 0) {
+                e.target.value = 1;
+            }
+        });
+    </script>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
