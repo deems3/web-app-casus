@@ -47,7 +47,11 @@ namespace Victuz_MVC.Controllers
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Details(int id)
         {
-            var order = await context.Order.Include(o => o.Account).Include(o => o.OrderProducts).ThenInclude(op => op.Product).FirstOrDefaultAsync();
+            var order = await context.Order
+                .Include(o => o.Account)
+                .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product)
+                .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order is null)
             {
@@ -169,6 +173,11 @@ namespace Victuz_MVC.Controllers
             return RedirectToAction(nameof(Cart));
         }
 
+        public IActionResult Success()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -185,7 +194,7 @@ namespace Victuz_MVC.Controllers
             }
 
             // Optioneel: returnen naar een succes pagina
-            return RedirectToAction(nameof(Cart));
+            return RedirectToAction(nameof(Success));
         }
     }
 }
