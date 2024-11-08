@@ -5,9 +5,8 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Aanpassen activiteit</h1>
 
-<h4>Activity</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,32 +14,32 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">naam</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
+                <label asp-for="Description" class="control-label">Beschrijving</label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
+                <label asp-for="Location" class="control-label">Locatie</label>
                 <input asp-for="Location" class="form-control" />
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Limit" class="control-label"></label>
+                <label asp-for="Limit" class="control-label">Limiet</label>
                 <input asp-for="Limit" class="form-control" />
                 <span asp-validation-for="Limit" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateTime" class="control-label"></label>
+                <label asp-for="DateTime" class="control-label">Datum & Tijd</label>
                 <input asp-for="DateTime" class="form-control" />
                 <span asp-validation-for="DateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
+                <label asp-for="Status" class="control-label">Status</label>
                 <select asp-for="Status" asp-items="Html.GetEnumSelectList<ActivityStatus>()" class="form-control"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
@@ -56,18 +55,18 @@
                 <input name="file" type="file" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="ActivityCategoryId" class="control-label">Category</label>
+                <label asp-for="ActivityCategoryId" class="control-label">Categorie</label>
                 <select asp-for="ActivityCategoryId" asp-items="ViewBag.ActivityCategoryId" class="form-control"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Opslaan" class="btn" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn">Terug naar de lijst</a>
 </div>
 
 @section Scripts {

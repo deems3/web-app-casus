@@ -4,38 +4,37 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Activiteit Details</h1>
 
 <div>
-    <h4>Activity</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            Naam
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            Beschrijving
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Limit)
+            Limiet
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Limit)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateTime)
+            Datum & Tijd
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.DateTime)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
+            Locatie
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Location)
@@ -52,11 +51,11 @@
     @if ((ViewBag.UserId is not null && ViewBag.IsMember && Model.Hosts!.Any(h => h.Id == ViewBag.UserId)) ||
     (ViewBag.UserId is not null && !ViewBag.IsMember))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn">Aanpassen</a>
     }
     @if (!ViewBag.IsBlacklisted)
     {
-        <a href="/Enrollments/Create/@Model?.Id">Inschrijven</a>
+        <a href="/Enrollments/Create/@Model?.Id" class="btn">Inschrijven</a>
     }
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index" class="btn">Terug naar lijst</a>
 </div>

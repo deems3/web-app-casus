@@ -12,9 +12,7 @@
             <th>
                 Totale prijs
             </th>
-            <th>
-                Account Id
-            </th>
+
             <th></th>
         </tr>
     </thead>
@@ -23,9 +21,6 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.TotalPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountId)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
