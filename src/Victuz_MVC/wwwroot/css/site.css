@@ -125,6 +125,7 @@ body {
     color: snow !important;
     background-color: #227980 !important;
 }
+/*Delete button*/
 
 .btn-delete {
     display: inline-block;
@@ -145,6 +146,7 @@ body {
     border-radius: 0.25rem;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 
 .btn-delete:hover {
     display: inline-block;
