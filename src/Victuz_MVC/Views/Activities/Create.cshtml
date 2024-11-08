@@ -14,31 +14,31 @@
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+                <label asp-for="Name" class="control-label">Naam</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
+                <label asp-for="Description" class="control-label">Beschrijving</label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Limit" class="control-label"></label>
+                <label asp-for="Limit" class="control-label">Limiet</label>
                 <input asp-for="Limit" class="form-control" />
                 <span asp-validation-for="Limit" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DateTime" class="control-label"></label>
+                <label asp-for="DateTime" class="control-label">Datum & Tijd</label>
                 <input asp-for="DateTime" class="form-control" />
                 <span asp-validation-for="DateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ActivityCategoryId" class="control-label">Category</label>
+                <label asp-for="ActivityCategoryId" class="control-label">Categorie</label>
                 <select asp-for="ActivityCategoryId" asp-items="ViewBag.ActivityCategoryId" class="form-control"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
+                <label asp-for="Location" class="control-label">Locatie</label>
                 <input asp-for="Location" class="form-control" />
                 <span asp-validation-for="Location" class="text-danger"></span>
             </div>
@@ -47,14 +47,14 @@
                 <input name="file" type="file" class="form-control" />
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Maak aan" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar lijst</a>
 </div>
 
 @section Scripts {

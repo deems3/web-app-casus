@@ -34,7 +34,7 @@
             <dt class="col-sm-2">
                 <input type="hidden" name="ProductId" value="@Model.Id"/>
                 <input type="number" id="quantityPicker" name="Quantity" min="1" value="1" />
-                <button type="submit">Voeg toe aan winkelmandje</button>
+            <button type="submit"  class="btn btn-primary">Voeg toe aan winkelmandje</button>
             </dt>
         </form>
     </dl>
@@ -50,6 +50,6 @@
     </script>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Pas aan</a> |
+    <a asp-action="Index">Terug naar lijst</a>
 </div>
