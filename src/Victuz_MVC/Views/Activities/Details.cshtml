@@ -51,11 +51,11 @@
     @if ((ViewBag.UserId is not null && ViewBag.IsMember && Model.Hosts!.Any(h => h.Id == ViewBag.UserId)) ||
     (ViewBag.UserId is not null && !ViewBag.IsMember))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn">Aanpassen</a>
     }
     @if (!ViewBag.IsBlacklisted)
     {
-        <a href="/Enrollments/Create/@Model?.Id">Inschrijven</a>
+        <a href="/Enrollments/Create/@Model?.Id" class="btn">Inschrijven</a>
     }
-    <a asp-action="Index">Terug naar lijst</a>
+    <a asp-action="Index" class="btn">Terug naar lijst</a>
 </div>

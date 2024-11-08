@@ -11,19 +11,19 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EnrolledAt)
+            Ingeschreven tijd
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.EnrolledAt)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Account)
+            Account
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Account.Id)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Activity)
+            Activiteit
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Activity.Name)
@@ -31,6 +31,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn">Aanpassen</a> |
+    <a asp-action="Index" class="btn">Terug naar lijst</a>
 </div>

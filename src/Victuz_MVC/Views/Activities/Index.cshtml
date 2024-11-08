@@ -9,7 +9,7 @@
 <p>
     @if(!ViewBag.IsMember)
     {
-        <a asp-action="Create" class="btn">Create New</a>
+        <a asp-action="Create" class="btn">Maak nieuwe activiteit</a>
     }
 
 
@@ -97,7 +97,7 @@
 
                 @if (User.IsInRole("Admin"))
                 {
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-warning">Verwijderen</a>    
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete">Verwijderen</a>    
                 }
             </td>
             <td>

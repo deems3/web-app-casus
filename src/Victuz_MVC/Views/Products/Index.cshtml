@@ -9,7 +9,7 @@
 @if (User.IsInRole("Admin"))
 {
     <p>
-        <a asp-action="Create">Voeg nieuw product toe</a>
+        <a asp-action="Create" class="btn">Voeg nieuw product toe</a>
     </p>
 }
 
@@ -71,12 +71,12 @@
             <td>
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id">Aanpassen</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn">Aanpassen</a>
                     }
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn">Details</a>
                     @if (User.IsInRole("Admin"))
                     {
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="DeleteText">Verwijderen</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="DeleteText" class="btn-delete">Verwijderen</a>
                     }
             </td>
         </tr>
